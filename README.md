@@ -1,6 +1,6 @@
-# SOURAJITVFX — CREATOR TOOLKIT
+# MAKE IT HAPPEN — CREATOR TOOLKIT
 
-A branded collection of 22 standalone browser-based creative tools.
+MAKE IT HAPPEN is a collection of 22 standalone browser-based creative tools by SOURAJITVFX.
 
 ## Run locally
 Open `index.html` in a browser, or serve this folder with any static web server.
@@ -9,10 +9,11 @@ Open `index.html` in a browser, or serve this folder with any static web server.
 Import this GitHub repository into Vercel. Framework preset: **Other**. Build command: leave blank. Output directory: `.`. No server runtime is required for the static pages.
 
 ## Branding
-- Main identity: **SOURAJITVFX**
+- Website name: **MAKE IT HAPPEN**
+- Creator / brand: **SOURAJITVFX**
 - Visual direction: midnight dark UI, violet-to-cyan gradients, glass-inspired cards, responsive layout.
 - `index.html` is the searchable creator-tool dashboard.
-- Every individual tool page includes a compact link back to the branded dashboard.
+- Every individual tool page includes a compact link back to the MAKE IT HAPPEN dashboard.
 
 ## Important security notes
 - Never commit API keys or private tokens. `background-remover.html` uses the placeholder `YOUR_REMOVE_BG_API_KEY`; configure your own key via a secure backend rather than exposing a paid API key in client-side HTML.
