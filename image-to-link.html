@@ -410,10 +410,10 @@
         <div class="modal-content">
             <h2><i class="fab fa-whatsapp" style="color: #25D366;"></i> Warning!</h2>
             <h2 style="font-size: 1.8em;">You Need To Follow Channel To Use This Tool</h2>
-            <p>This Tool is Developed By SOURAJITVFX. You Should Follow SOURAJITVFX HACKS Channel For More Tools, Hacks And Methods In Free!</p>
+            <p>This Tool is Developed By SOURAJITVFX. You Should Follow SOURAJITVFX Channel For More Tools, Hacks And Methods In Free!</p>
 
             <div class="modal-button-group">
-                <a href="https://whatsapp.com/channel/0029VbAzazM2kNFp4p1qIZ2P" target="_blank" class="join-button">
+                <a href="https://whatsapp.com/channel/0029Vb9GgMWLI8YZ2iiUtL3q" target="_blank" class="join-button">
                     <i class="fab fa-whatsapp"></i> Join WhatsApp Channel
                 </a>
                 <button class="joined-button" onclick="closeModal()">
@@ -472,14 +472,12 @@
 
             const formData = new FormData();
             formData.append('image', file);
-            formData.append('key', '274910e7dcf1794b3cdcce6956bc00b3'); // Your provided API key
+            
 
             try {
                 document.getElementById('loader').style.display = 'block';
-                const response = await fetch('https://api.imgbb.com/1/upload', {
-                    method: 'POST',
-                    body: formData
-                });
+                const fileBase64 = await new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result).split(',')[1]); reader.onerror = reject; reader.readAsDataURL(file); });
+                const response = await fetch('/api/imgbb', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: fileBase64, name: file.name, mimeType: file.type }) });
                 const data = await response.json();
                 if (data.success) {
                     urlInput.value = data.data.url;
@@ -548,4 +546,7 @@
             uploadAndGenerate(); // Auto-upload on drop
         });
     </script>
+
+<!-- SOURAJITVFX SOCIAL LINKS -->
+<style>.svfx-social-footer{margin:28px auto 18px;padding:18px 14px;max-width:1000px;text-align:center;font:600 13px/1.5 system-ui,sans-serif;color:#888;border-top:1px solid rgba(130,120,180,.22)}.svfx-social-footer strong{display:block;margin-bottom:12px;letter-spacing:.14em;color:#9b7bff}.svfx-social-footer .svfx-links{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}.svfx-social-footer a{display:inline-flex;padding:9px 13px;border:1px solid rgba(150,130,220,.3);border-radius:999px;color:inherit;text-decoration:none;background:rgba(130,110,210,.08)}</style><footer class="svfx-social-footer"><strong>CONNECT WITH SOURAJITVFX</strong><div class="svfx-links"><a href="https://whatsapp.com/channel/0029Vb9GgMWLI8YZ2iiUtL3q" target="_blank" rel="noopener">WhatsApp Channel</a><a href="https://t.me/sourajitvfx" target="_blank" rel="noopener">Telegram</a><a href="https://instagram.com/sourajitvfx" target="_blank" rel="noopener">Instagram</a><a href="https://youtube.com/@sourajitvfx" target="_blank" rel="noopener">YouTube</a></div></footer>
 </body></html>
