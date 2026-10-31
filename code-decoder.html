@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Decrypter Pro | SOURAJITVFX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --panel: #111120;
+            --border: #1e1e3a;
+            --cyan: #00f5ff;
+            --green: #00ff88;
+            --orange: #ff6b00;
+            --red: #ff3366;
+            --purple: #9b59ff;
+            --yellow: #ffe066;
+            --text: #c8d6e5;
+            --dim: #556070;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+            background-image:
+                radial-gradient(ellipse at 20% 10%, rgba(0,245,255,0.04) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 90%, rgba(155,89,255,0.04) 0%, transparent 50%);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.4rem, 4vw, 2.2rem);
+            font-weight: 900;
+            letter-spacing: 4px;
+            color: var(--cyan);
+            text-shadow: 0 0 20px rgba(0,245,255,0.5);
+        }
+
+        .header p {
+            color: var(--dim);
+            font-size: 0.8rem;
+            margin-top: 6px;
+            letter-spacing: 2px;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* ── MAIN MODE TABS (Decrypt / Encrypt / Format) ── */
+        .mode-tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 4px;
+        }
+
+        .mode-tab {
+            flex: 1;
+            padding: 11px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 5px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--dim);
+            border: none;
+            background: transparent;
+            transition: all 0.2s;
+        }
+
+        .mode-tab.active-decrypt {
+            background: rgba(0,245,255,0.1);
+            color: var(--cyan);
+            border: 1px solid rgba(0,245,255,0.3);
+        }
+        .mode-tab.active-encrypt {
+            background: rgba(255,107,0,0.12);
+            color: var(--orange);
+            border: 1px solid rgba(255,107,0,0.35);
+        }
+        .mode-tab.active-format {
+            background: rgba(155,89,255,0.12);
+            color: var(--purple);
+            border: 1px solid rgba(155,89,255,0.35);
+        }
+
+        /* ── SECTION PANELS ── */
+        .mode-panel { display: none; }
+        .mode-panel.visible { display: flex; flex-direction: column; gap: 16px; }
+
+        /* Input Method Sub-Tabs */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 4px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 5px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.78rem;
+            letter-spacing: 1px;
+            color: var(--dim);
+            border: none;
+            background: transparent;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            background: rgba(0,245,255,0.1);
+            color: var(--cyan);
+            border: 1px solid rgba(0,245,255,0.3);
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--border);
+            padding: 24px;
+            text-align: center;
+            border-radius: 8px;
+            background: var(--panel);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: none;
+        }
+
+        .upload-area.active-panel { display: block; }
+        .upload-area:hover { border-color: var(--cyan); background: rgba(0,245,255,0.03); }
+
+        .upload-area label {
+            display: inline-block;
+            background: var(--cyan);
+            color: #000;
+            padding: 10px 22px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        input[type="file"] { display: none; }
+
+        #fileName, #fileNameEnc, #fileNameFmt {
+            margin-top: 10px;
+            color: var(--dim);
+            font-size: 0.8rem;
+        }
+
+        /* Paste Area */
+        .paste-panel { display: none; }
+        .paste-panel.active-panel { display: block; }
+
+        /* Encryption Type Selector */
+        .enc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 8px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .enc-label {
+            font-size: 0.72rem;
+            letter-spacing: 2px;
+            color: var(--dim);
+            margin-bottom: 10px;
+            grid-column: 1 / -1;
+            text-transform: uppercase;
+        }
+
+        .enc-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.02);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text);
+        }
+
+        .enc-chip input[type="checkbox"] { display: none; }
+
+        .enc-chip.selected {
+            border-color: var(--green);
+            background: rgba(0,255,136,0.08);
+            color: var(--green);
+        }
+
+        /* Encrypt chips use orange accent */
+        .enc-chip.enc-selected {
+            border-color: var(--orange);
+            background: rgba(255,107,0,0.08);
+            color: var(--orange);
+        }
+
+        .enc-chip .dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            border: 1px solid var(--dim);
+            flex-shrink: 0;
+        }
+
+        .enc-chip.selected .dot {
+            background: var(--green);
+            border-color: var(--green);
+            box-shadow: 0 0 6px var(--green);
+        }
+
+        .enc-chip.enc-selected .dot {
+            background: var(--orange);
+            border-color: var(--orange);
+            box-shadow: 0 0 6px var(--orange);
+        }
+
+        /* Auto Detect */
+        .auto-detect-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: rgba(155,89,255,0.08);
+            border: 1px solid rgba(155,89,255,0.3);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--purple);
+            transition: all 0.2s;
+        }
+
+        .auto-detect-row:hover { background: rgba(155,89,255,0.15); }
+        .auto-detect-row input { display: none; }
+
+        .auto-detect-row .toggle {
+            width: 32px; height: 18px;
+            background: var(--border);
+            border-radius: 9px;
+            position: relative;
+            transition: background 0.2s;
+        }
+
+        .auto-detect-row .toggle::after {
+            content: '';
+            position: absolute;
+            width: 12px; height: 12px;
+            background: #fff;
+            border-radius: 50%;
+            top: 3px; left: 3px;
+            transition: left 0.2s;
+        }
+
+        .auto-detect-row.active .toggle { background: var(--purple); }
+        .auto-detect-row.active .toggle::after { left: 17px; }
+
+        /* Textarea */
+        textarea {
+            width: 100%;
+            background: #08080f;
+            color: var(--green);
+            border: 1px solid var(--border);
+            padding: 14px;
+            border-radius: 8px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.82rem;
+            resize: vertical;
+            line-height: 1.6;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus { border-color: rgba(0,245,255,0.4); }
+
+        #inputCode  { height: 180px; color: var(--cyan); }
+        #output     { height: 260px; }
+
+        /* Encrypt panel textareas */
+        #encInputCode  { height: 180px; color: var(--orange); }
+        #encOutput     { height: 260px; color: var(--orange); }
+
+        /* Format panel textareas */
+        #fmtInputCode  { height: 200px; color: var(--cyan); }
+        #fmtOutput     { height: 280px; color: var(--yellow); background: #08080f; }
+
+        /* Status */
+        .status-line {
+            text-align: center;
+            font-size: 0.82rem;
+            letter-spacing: 1px;
+            min-height: 20px;
+        }
+
+        #detectedType {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--purple);
+            letter-spacing: 1px;
+            min-height: 18px;
+        }
+
+        /* Buttons */
+        .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+        .btn {
+            flex: 1;
+            padding: 13px;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            transition: all 0.2s;
+        }
+
+        .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+        .btn-decrypt {
+            background: var(--green);
+            color: #000;
+            box-shadow: 0 0 20px rgba(0,255,136,0.2);
+        }
+        .btn-decrypt:hover:not(:disabled) {
+            background: #00ffaa;
+            box-shadow: 0 0 30px rgba(0,255,136,0.4);
+        }
+
+        .btn-encrypt-action {
+            background: var(--orange);
+            color: #000;
+            box-shadow: 0 0 20px rgba(255,107,0,0.2);
+        }
+        .btn-encrypt-action:hover:not(:disabled) {
+            background: #ff8c00;
+            box-shadow: 0 0 30px rgba(255,107,0,0.4);
+        }
+
+        .btn-format-action {
+            background: var(--purple);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(155,89,255,0.25);
+        }
+        .btn-format-action:hover:not(:disabled) {
+            background: #b47aff;
+            box-shadow: 0 0 30px rgba(155,89,255,0.45);
+        }
+
+        .btn-clear {
+            background: transparent;
+            color: var(--red);
+            border: 1px solid var(--red);
+            flex: 0 0 auto;
+            padding: 13px 18px;
+        }
+        .btn-clear:hover { background: rgba(255,51,102,0.1); }
+
+        .btn-download {
+            background: var(--cyan);
+            color: #000;
+            display: none;
+            box-shadow: 0 0 20px rgba(0,245,255,0.2);
+        }
+        .btn-download:hover { background: #00dde8; }
+
+        /* Output Section Label */
+        .section-label {
+            font-size: 0.68rem;
+            letter-spacing: 3px;
+            color: var(--dim);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        /* Key input */
+        .key-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 16px;
+        }
+
+        .key-row label {
+            font-size: 0.72rem;
+            letter-spacing: 2px;
+            color: var(--dim);
+            white-space: nowrap;
+        }
+
+        .key-row input[type="text"],
+        .key-row input[type="number"] {
+            flex: 1;
+            background: #08080f;
+            color: var(--yellow);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            padding: 8px 12px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.82rem;
+            outline: none;
+        }
+
+        .key-row input:focus { border-color: var(--orange); }
+
+        /* Format options */
+        .fmt-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px 16px;
+        }
+
+        .fmt-chip {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 13px;
+            border-radius: 5px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.02);
+            cursor: pointer;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.74rem;
+            color: var(--text);
+            transition: all 0.2s;
+        }
+
+        .fmt-chip.selected {
+            border-color: var(--purple);
+            background: rgba(155,89,255,0.1);
+            color: var(--purple);
+        }
+
+        .fmt-chip .dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            border: 1px solid var(--dim);
+            flex-shrink: 0;
+        }
+
+        .fmt-chip.selected .dot {
+            background: var(--purple);
+            border-color: var(--purple);
+            box-shadow: 0 0 5px var(--purple);
+        }
+
+        /* Info badge */
+        .info-badge {
+            display: inline-block;
+            font-size: 0.68rem;
+            letter-spacing: 1px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: rgba(255,224,102,0.08);
+            border: 1px solid rgba(255,224,102,0.25);
+            color: var(--yellow);
+            margin-bottom: 4px;
+        }
+
+        /* Scanline overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(
+                0deg, transparent, transparent 2px,
+                rgba(0,0,0,0.05) 2px, rgba(0,0,0,0.05) 4px
+            );
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>⟨ CODE DECRYPTER PRO ⟩</h1>
+        <p>DECRYPT · ENCRYPT · FORMAT · HTML · PHP · BASE64 · AND MORE</p>
+    </div>
+
+    <!-- ══ MAIN MODE TABS ══ -->
+    <div class="mode-tabs">
+        <button class="mode-tab active-decrypt" id="modeTabDecrypt" onclick="switchMode('decrypt')">🔓 DECRYPT</button>
+        <button class="mode-tab" id="modeTabEncrypt" onclick="switchMode('encrypt')">🔒 ENCRYPT</button>
+        <button class="mode-tab" id="modeTabFormat" onclick="switchMode('format')">✦ FORMAT</button>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         DECRYPT PANEL
+    ══════════════════════════════════════ -->
+    <div class="mode-panel visible" id="panelDecrypt">
+
+        <!-- Input Method Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('file')">📁 FILE UPLOAD</button>
+            <button class="tab" onclick="switchTab('paste')">📋 PASTE CODE</button>
+        </div>
+
+        <!-- File Upload Panel -->
+        <div class="upload-area active-panel" id="filePanel">
+            <label for="fileInput">CHOOSE FILE (.html / .php / .txt)</label>
+            <input type="file" id="fileInput" accept=".html,.php,.txt,.js">
+            <p id="fileName">No file chosen</p>
+        </div>
+
+        <!-- Paste Panel -->
+        <div class="paste-panel" id="pastePanel">
+            <div class="section-label">PASTE ENCRYPTED CODE BELOW</div>
+            <textarea id="inputCode" placeholder="Paste your encrypted/obfuscated code here...&#10;&#10;Supported: HTML obfuscation, PHP base64_decode, eval() encoded, ROT13, Hex encoded, URL encoded, and more..."></textarea>
+        </div>
+
+        <!-- Auto Detect Toggle -->
+        <div class="auto-detect-row active" id="autoDetectRow" onclick="toggleAutoDetect()">
+            <div class="toggle"></div>
+            <span>AUTO-DETECT ENCRYPTION TYPE</span>
+        </div>
+
+        <!-- Encryption Type Selector -->
+        <div class="enc-grid" id="encGrid" style="display:none;">
+            <div class="enc-label">SELECT DECRYPTION METHOD</div>
+            <div class="enc-chip" data-type="html_obfuscate" onclick="toggleChip(this,'dec')"><div class="dot"></div> HTML Obfuscated</div>
+            <div class="enc-chip" data-type="base64" onclick="toggleChip(this,'dec')"><div class="dot"></div> Base64</div>
+            <div class="enc-chip" data-type="php_base64" onclick="toggleChip(this,'dec')"><div class="dot"></div> PHP base64_decode</div>
+            <div class="enc-chip" data-type="php_eval" onclick="toggleChip(this,'dec')"><div class="dot"></div> PHP eval()</div>
+            <div class="enc-chip" data-type="rot13" onclick="toggleChip(this,'dec')"><div class="dot"></div> ROT13</div>
+            <div class="enc-chip" data-type="hex" onclick="toggleChip(this,'dec')"><div class="dot"></div> Hex Encoded</div>
+            <div class="enc-chip" data-type="url" onclick="toggleChip(this,'dec')"><div class="dot"></div> URL Encoded</div>
+            <div class="enc-chip" data-type="unicode" onclick="toggleChip(this,'dec')"><div class="dot"></div> Unicode Escape</div>
+            <div class="enc-chip" data-type="html_entities" onclick="toggleChip(this,'dec')"><div class="dot"></div> HTML Entities</div>
+            <div class="enc-chip" data-type="char_code" onclick="toggleChip(this,'dec')"><div class="dot"></div> JS charCode</div>
+            <div class="enc-chip" data-type="unescape_percent" onclick="toggleChip(this,'dec')"><div class="dot"></div> unescape(%XX) ★</div>
+            <div class="enc-chip" data-type="phpkobo" onclick="toggleChip(this,'dec')"><div class="dot"></div> PHPKobo Obfuscated ★</div>
+            <div class="enc-chip" data-type="multilayer" onclick="toggleChip(this,'dec')"><div class="dot"></div> Multi-Layer Auto</div>
+        </div>
+
+        <div id="detectedType"></div>
+
+        <div class="btn-row">
+            <button class="btn btn-decrypt" id="decryptBtn" onclick="decrypt()" disabled>⟩ DECRYPT</button>
+            <button class="btn btn-clear" onclick="clearAll()">✕</button>
+        </div>
+
+        <div class="status-line" id="status"></div>
+
+        <div class="section-label">DECRYPTED OUTPUT</div>
+        <textarea id="output" placeholder="Decrypted code will appear here..." readonly></textarea>
+
+        <div class="btn-row">
+            <button class="btn btn-download" id="downloadBtn" onclick="downloadResult()">↓ DOWNLOAD RESULT</button>
+        </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════
+         ENCRYPT PANEL
+    ══════════════════════════════════════ -->
+    <div class="mode-panel" id="panelEncrypt">
+
+        <div style="display:flex;gap:8px;align-items:center;">
+            <span class="info-badge">⟩ ENCODE / ENCRYPT YOUR CODE OR TEXT</span>
+        </div>
+
+        <!-- Input Method Sub-Tabs -->
+        <div class="tabs">
+            <button class="tab active" id="encFileTab" onclick="switchEncTab('file')">📁 FILE UPLOAD</button>
+            <button class="tab" id="encPasteTab" onclick="switchEncTab('paste')">📋 PASTE CODE</button>
+        </div>
+
+        <!-- File Upload -->
+        <div class="upload-area active-panel" id="encFilePanel">
+            <label for="fileInputEnc">CHOOSE FILE (.html / .php / .txt / .js)</label>
+            <input type="file" id="fileInputEnc" accept=".html,.php,.txt,.js,.css">
+            <p id="fileNameEnc">No file chosen</p>
+        </div>
+
+        <!-- Paste -->
+        <div class="paste-panel" id="encPastePanel">
+            <div class="section-label">PASTE PLAIN CODE / TEXT BELOW</div>
+            <textarea id="encInputCode" placeholder="Paste your plain text or code here to encrypt / encode..."></textarea>
+        </div>
+
+        <!-- Encrypt Method Selector -->
+        <div class="enc-grid">
+            <div class="enc-label">SELECT ENCRYPTION / ENCODING METHOD</div>
+            <div class="enc-chip" data-enctype="base64" onclick="toggleChip(this,'enc')"><div class="dot"></div> Base64</div>
+            <div class="enc-chip" data-enctype="rot13" onclick="toggleChip(this,'enc')"><div class="dot"></div> ROT13</div>
+            <div class="enc-chip" data-enctype="hex" onclick="toggleChip(this,'enc')"><div class="dot"></div> Hex Encode</div>
+            <div class="enc-chip" data-enctype="url" onclick="toggleChip(this,'enc')"><div class="dot"></div> URL Encode</div>
+            <div class="enc-chip" data-enctype="unicode" onclick="toggleChip(this,'enc')"><div class="dot"></div> Unicode Escape</div>
+            <div class="enc-chip" data-enctype="html_entities" onclick="toggleChip(this,'enc')"><div class="dot"></div> HTML Entities</div>
+            <div class="enc-chip" data-enctype="caesar" onclick="toggleChip(this,'enc')"><div class="dot"></div> Caesar Cipher</div>
+            <div class="enc-chip" data-enctype="vigenere" onclick="toggleChip(this,'enc')"><div class="dot"></div> Vigenère Cipher</div>
+            <div class="enc-chip" data-enctype="xor" onclick="toggleChip(this,'enc')"><div class="dot"></div> XOR (key)</div>
+            <div class="enc-chip" data-enctype="binary" onclick="toggleChip(this,'enc')"><div class="dot"></div> Binary</div>
+            <div class="enc-chip" data-enctype="morse" onclick="toggleChip(this,'enc')"><div class="dot"></div> Morse Code</div>
+            <div class="enc-chip" data-enctype="reverse" onclick="toggleChip(this,'enc')"><div class="dot"></div> Reverse String</div>
+        </div>
+
+        <!-- Key input (shown for some methods) -->
+        <div class="key-row" id="keyRow" style="display:none;">
+            <label id="keyLabel">KEY :</label>
+            <input type="text" id="encKey" placeholder="Enter key..." />
+        </div>
+
+        <div class="btn-row">
+            <button class="btn btn-encrypt-action" id="encryptBtn" onclick="encryptAction()" disabled>⟩ ENCRYPT / ENCODE</button>
+            <button class="btn btn-clear" onclick="clearEncrypt()">✕</button>
+        </div>
+
+        <div class="status-line" id="encStatus"></div>
+
+        <div class="section-label">ENCRYPTED OUTPUT</div>
+        <textarea id="encOutput" placeholder="Encrypted / encoded result will appear here..." readonly></textarea>
+
+        <div class="btn-row">
+            <button class="btn btn-download" id="encDownloadBtn" onclick="downloadEncResult()" style="display:none;">↓ DOWNLOAD RESULT</button>
+        </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════
+         FORMAT PANEL
+    ══════════════════════════════════════ -->
+    <div class="mode-panel" id="panelFormat">
+
+        <div style="display:flex;gap:8px;align-items:center;">
+            <span class="info-badge">⟩ FORMAT & BEAUTIFY CODE</span>
+        </div>
+
+        <!-- Input Sub-tabs -->
+        <div class="tabs">
+            <button class="tab active" id="fmtFileTab" onclick="switchFmtTab('file')">📁 FILE UPLOAD</button>
+            <button class="tab" id="fmtPasteTab" onclick="switchFmtTab('paste')">📋 PASTE CODE</button>
+        </div>
+
+        <div class="upload-area active-panel" id="fmtFilePanel">
+            <label for="fileInputFmt">CHOOSE FILE (.html / .css / .js / .php / .json)</label>
+            <input type="file" id="fileInputFmt" accept=".html,.php,.txt,.js,.css,.json">
+            <p id="fileNameFmt">No file chosen</p>
+        </div>
+
+        <div class="paste-panel" id="fmtPastePanel">
+            <div class="section-label">PASTE CODE TO FORMAT</div>
+            <textarea id="fmtInputCode" placeholder="Paste minified or messy code here..."></textarea>
+        </div>
+
+        <!-- Format Options -->
+        <div class="fmt-options">
+            <div class="enc-label" style="grid-column:unset;width:100%;margin-bottom:4px;">FORMAT OPTIONS</div>
+            <div class="fmt-chip selected" data-fmt="auto" onclick="toggleFmtChip(this)"><div class="dot"></div> Auto-Detect Language</div>
+            <div class="fmt-chip" data-fmt="html" onclick="toggleFmtChip(this)"><div class="dot"></div> HTML</div>
+            <div class="fmt-chip" data-fmt="css" onclick="toggleFmtChip(this)"><div class="dot"></div> CSS</div>
+            <div class="fmt-chip" data-fmt="js" onclick="toggleFmtChip(this)"><div class="dot"></div> JavaScript</div>
+            <div class="fmt-chip" data-fmt="json" onclick="toggleFmtChip(this)"><div class="dot"></div> JSON</div>
+            <div class="fmt-chip" data-fmt="php" onclick="toggleFmtChip(this)"><div class="dot"></div> PHP</div>
+        </div>
+
+        <!-- Indent size -->
+        <div class="key-row">
+            <label>INDENT SIZE :</label>
+            <input type="number" id="indentSize" value="4" min="1" max="8" style="max-width:80px;" />
+            <label style="margin-left:10px;">USE TABS :</label>
+            <select id="useTabs" style="background:#08080f;color:var(--yellow);border:1px solid var(--border);border-radius:5px;padding:7px 10px;font-family:'Share Tech Mono',monospace;font-size:0.82rem;outline:none;">
+                <option value="spaces">Spaces</option>
+                <option value="tabs">Tabs</option>
+            </select>
+        </div>
+
+        <div class="btn-row">
+            <button class="btn btn-format-action" id="formatBtn" onclick="formatAction()" disabled>⟩ FORMAT CODE</button>
+            <button class="btn btn-clear" onclick="clearFormat()">✕</button>
+        </div>
+
+        <div class="status-line" id="fmtStatus"></div>
+
+        <div class="section-label">FORMATTED OUTPUT</div>
+        <textarea id="fmtOutput" placeholder="Formatted code will appear here..." readonly></textarea>
+
+        <div class="btn-row">
+            <button class="btn btn-download" id="fmtDownloadBtn" onclick="downloadFmtResult()" style="display:none;">↓ DOWNLOAD RESULT</button>
+        </div>
+    </div>
+
+</div><!-- /container -->
+
+<script>
+/* ════════════════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════════════════ */
+let fileContent = "";
+let originalFileName = "decrypted";
+let currentTab = 'file';
+let autoDetect = true;
+let selectedType = null;
+
+let encFileContent = "";
+let encOriginalFileName = "encrypted";
+let encCurrentTab = 'file';
+let selectedEncType = null;
+
+let fmtFileContent = "";
+let fmtOriginalFileName = "formatted";
+let fmtCurrentTab = 'file';
+let selectedFmtType = 'auto';
+
+/* ════════════════════════════════════════════════════════
+   MODE SWITCHING
+════════════════════════════════════════════════════════ */
+function switchMode(mode) {
+    ['decrypt','encrypt','format'].forEach(m => {
+        document.getElementById('panel' + cap(m)).classList.toggle('visible', m === mode);
+        const btn = document.getElementById('modeTab' + cap(m));
+        btn.className = 'mode-tab';
+        if (m === mode) btn.classList.add('active-' + m);
+    });
+}
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+/* ════════════════════════════════════════════════════════
+   DECRYPT — TAB / UPLOAD / STATUS
+════════════════════════════════════════════════════════ */
+function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('#panelDecrypt .tab').forEach((t, i) => {
+        t.classList.toggle('active', (i === 0 && tab === 'file') || (i === 1 && tab === 'paste'));
+    });
+    document.getElementById('filePanel').classList.toggle('active-panel', tab === 'file');
+    document.getElementById('pastePanel').classList.toggle('active-panel', tab === 'paste');
+    updateDecryptBtn();
+}
+
+document.getElementById('fileInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    originalFileName = file.name.replace(/\.[^.]+$/, '');
+    document.getElementById('fileName').textContent = "Selected: " + file.name;
+    const reader = new FileReader();
+    reader.onload = evt => { fileContent = evt.target.result; setStatus("File loaded. Ready to decrypt.", 'cyan'); updateDecryptBtn(); };
+    reader.readAsText(file);
+});
+
+function updateDecryptBtn() {
+    const has = currentTab === 'file' ? fileContent.length > 0 : document.getElementById('inputCode').value.trim().length > 0;
+    document.getElementById('decryptBtn').disabled = !has;
+}
+
+document.getElementById('inputCode').addEventListener('input', updateDecryptBtn);
+
+function toggleAutoDetect() {
+    autoDetect = !autoDetect;
+    document.getElementById('autoDetectRow').classList.toggle('active', autoDetect);
+    document.getElementById('encGrid').style.display = autoDetect ? 'none' : 'grid';
+}
+
+function toggleChip(el, mode) {
+    if (mode === 'dec') {
+        document.querySelectorAll('#encGrid .enc-chip').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedType = el.dataset.type;
+    } else {
+        document.querySelectorAll('#panelEncrypt .enc-chip').forEach(c => c.classList.remove('enc-selected'));
+        el.classList.add('enc-selected');
+        selectedEncType = el.dataset.enctype;
+        showKeyRow(selectedEncType);
+        updateEncBtn();
+    }
+}
+
+function setStatus(msg, color='text') {
+    const colors = { cyan:'#00f5ff', green:'#00ff88', red:'#ff3366', purple:'#9b59ff', text:'#c8d6e5', orange:'#ff6b00' };
+    const el = document.getElementById('status');
+    el.textContent = msg;
+    el.style.color = colors[color] || color;
+}
+function setDetected(msg) {
+    document.getElementById('detectedType').textContent = msg ? `⟩ DETECTED: ${msg}` : '';
+}
+
+/* ════════════════════════════════════════════════════════
+   DECRYPT MAIN (async for PHPKobo iframe support)
+════════════════════════════════════════════════════════ */
+async function decrypt() {
+    const raw = currentTab === 'file' ? fileContent : document.getElementById('inputCode').value.trim();
+    if (!raw) return;
+    document.getElementById('output').value = '';
+    document.getElementById('downloadBtn').style.display = 'none';
+    setDetected('');
+
+    const isPhpKobo = /;Function\s*\(["']/\.test(raw) || /phpkobo\.com/.test(raw);
+    if (isPhpKobo) {
+        setStatus('⟳ PHPKobo detected — running sandbox decoder (please wait)...', 'purple');
+        document.getElementById('decryptBtn').disabled = true;
+    }
+
+    try {
+        let result, type;
+        if (autoDetect) {
+            [result, type] = await autoDecryptAsync(raw);
+        } else {
+            type = selectedType || 'html_obfuscate';
+            result = type === 'phpkobo' ? await decodePhpKobo(raw) : decryptByType(raw, type);
+        }
+        if (result !== null && result !== undefined && result !== '') {
+            document.getElementById('output').value = result;
+            setStatus('\u2713 Decryption Successful!', 'green');
+            if (autoDetect && type) setDetected(type.toUpperCase().replace(/_/g,' '));
+            document.getElementById('downloadBtn').style.display = 'block';
+        } else {
+            setStatus('\u2717 Decryption produced empty output. Try a different method.', 'red');
+        }
+    } catch (err) {
+        setStatus('\u2717 Error: ' + err.message, 'red');
+    } finally {
+        updateDecryptBtn();
+    }
+}
+
+async function autoDecryptAsync(code) {
+    if (/unescape\s*\(\s*['"](%[0-9a-fA-F]{2}[^'"]*)['"]\s*\)/.test(code))
+        return [decryptByType(code,'unescape_percent'), 'unescape(%XX) Percent Encoded'];
+    if (/^(%[0-9a-fA-F]{2})+$/.test(code.trim().replace(/\s/g,'')))
+        return [decryptByType(code.trim(),'unescape_percent'), 'unescape(%XX) Percent Encoded'];
+    if (/;Function\s*\(["']/\.test(code) || /phpkobo\.com/.test(code)) {
+        const r = await decodePhpKobo(code);
+        return [r, 'PHPKobo Obfuscated'];
+    }
+    return autoDecrypt(code);
+}
+
+function autoDecrypt(code) {
+    if (/unescape\s*\(\s*['"](%[0-9a-fA-F]{2}[^'"]*)['"]\s*\)/.test(code))
+        return [decryptByType(code,'unescape_percent'), 'unescape(%XX) Percent Encoded'];
+    if (/^(%[0-9a-fA-F]{2})+$/.test(code.trim().replace(/\s/g,'')))
+        return [decryptByType(code.trim(),'unescape_percent'), 'unescape(%XX) Percent Encoded'];
+    if (/;Function\s*\(["']/.test(code) || /phpkobo\.com/.test(code))
+        return [decryptByType(code,'phpkobo'), 'PHPKobo Obfuscated'];
+    if (/base64_decode\s*\(/.test(code))
+        return [decryptByType(code,'php_base64'), 'PHP base64_decode'];
+    if (/eval\s*\(/.test(code) && /gzinflate|gzencode|str_rot13/.test(code))
+        return [decryptByType(code,'php_eval'), 'PHP eval()'];
+    if (/<script>[\s\S]*?\(function\(\)/.test(code))
+        return [decryptByType(code,'html_obfuscate'), 'HTML Obfuscated'];
+    if (/^[A-Za-z0-9+/=\s]+$/.test(code.trim()) && code.trim().length % 4 === 0 && code.trim().length > 8) {
+        const b = decryptByType(code.trim(),'base64');
+        if (b && b.length > 0 && /[\x20-\x7E\n\r\t]/.test(b)) return [b,'Base64'];
+    }
+    if (/^[\s0-9a-fA-F]+$/.test(code.trim()) && code.trim().replace(/\s/g,'').length % 2 === 0) {
+        const h = decryptByType(code.trim(),'hex');
+        if (h && /[\x20-\x7E]/.test(h)) return [h,'Hex Encoded'];
+    }
+    if (/%[0-9a-fA-F]{2}/.test(code))
+        return [decryptByType(code,'unescape_percent'), 'unescape(%XX) Percent Encoded'];
+    if (/\\u[0-9a-fA-F]{4}/.test(code))
+        return [decryptByType(code,'unicode'), 'Unicode Escape'];
+    if (/&[a-z]+;|&#\d+;|&#x[0-9a-fA-F]+;/.test(code))
+        return [decryptByType(code,'html_entities'), 'HTML Entities'];
+    if (/String\.fromCharCode|fromCharCode/.test(code))
+        return [decryptByType(code,'char_code'), 'JS charCode'];
+    const rot = decryptByType(code,'rot13');
+    if (rot && /\b(the|and|for|with|this|that|function|var|let|const)\b/i.test(rot))
+        return [rot,'ROT13'];
+    try { const b2 = atob(code.trim()); if (b2 && /[\x20-\x7E]/.test(b2)) return [b2,'Base64 (fallback)']; } catch(e) {}
+    return [null, null];
+}
+
+function decryptByType(code, type) {
+    switch(type) {
+        case 'html_obfuscate':   return decodeHtmlObfuscated(code);
+        case 'base64':           return safeAtob(code.trim());
+        case 'php_base64':       return decodePhpBase64(code);
+        case 'php_eval':         return decodePhpEval(code);
+        case 'rot13':            return rot13(code);
+        case 'hex':              return hexToStr(code.trim().replace(/\s/g,''));
+        case 'url':              return decodeURIComponent(code.replace(/\+/g,' '));
+        case 'unescape_percent': return decodeUnescapePercent(code);
+        case 'phpkobo':          return decodePhpKobo(code);
+        case 'multilayer':       return decodeMultiLayer(code);
+        case 'unicode':          return code.replace(/\\u([0-9a-fA-F]{4})/g, (_,h) => String.fromCharCode(parseInt(h,16)));
+        case 'html_entities':    return decodeHtmlEntities(code);
+        case 'char_code':        return decodeCharCode(code);
+        default:                 return code;
+    }
+}
+
+/* ── Decoders ── */
+function decodeHtmlObfuscated(code) {
+    const match = code.match(/<script>\s*\(\s*function\(\)\s*\{([\s\S]+?)\}\s*\)\(\);\s*<\/script>/i);
+    if (!match) throw new Error("HTML obfuscated format not found. Try 'Paste Code' tab and select correct type.");
+    let decryptedOutput = "";
+    const fakeDoc = { open:()=>{}, close:()=>{}, write:c=>{decryptedOutput+=c;}, writeln:c=>{decryptedOutput+=c+'\n';} };
+    (new Function('document', match[1]))(fakeDoc);
+    return decryptedOutput;
+}
+
+function decodePhpBase64(code) {
+    const matches = [...code.matchAll(/base64_decode\s*\(\s*['"]([A-Za-z0-9+/=]+)['"]\s*\)/g)];
+    if (matches.length === 0) return safeAtob(code.trim());
+    let result = code;
+    for (const m of matches) {
+        try { result = result.replace(m[0], '/* DECODED: ' + safeAtob(m[1]) + ' */'); } catch(e) {}
+    }
+    try {
+        const evalMatch = code.match(/eval\s*\(\s*base64_decode\s*\(\s*['"]([A-Za-z0-9+/=]+)['"]\s*\)\s*\)/);
+        if (evalMatch) return safeAtob(evalMatch[1]);
+    } catch(e) {}
+    return result;
+}
+
+function decodePhpEval(code) {
+    const rot13b64 = code.match(/str_rot13\s*\(\s*base64_decode\s*\(\s*['"]([A-Za-z0-9+/=]+)['"]\s*\)\s*\)/);
+    if (rot13b64) return rot13(safeAtob(rot13b64[1]));
+    const b64 = code.match(/eval\s*\(\s*base64_decode\s*\(\s*['"]([A-Za-z0-9+/=]+)['"]\s*\)\s*\)/);
+    if (b64) return safeAtob(b64[1]);
+    const gz = code.match(/gzinflate\s*\(\s*base64_decode\s*\(\s*['"]([A-Za-z0-9+/=]+)['"]\s*\)\s*\)/);
+    if (gz) return "[gzinflate detected] Base64 content:\n" + safeAtob(gz[1]);
+    const allB64 = [...code.matchAll(/['"]([A-Za-z0-9+/=]{20,})['"]/g)];
+    let out = '';
+    for (const m of allB64) { try { out += safeAtob(m[1]) + '\n'; } catch(e) {} }
+    return out || 'PHP eval structure detected but could not fully decode.';
+}
+
+function rot13(str) {
+    return str.replace(/[a-zA-Z]/g, c => {
+        const base = c <= 'Z' ? 65 : 97;
+        return String.fromCharCode(((c.charCodeAt(0)-base+13)%26)+base);
+    });
+}
+
+function hexToStr(hex) {
+    let str = '';
+    for (let i = 0; i < hex.length; i += 2) str += String.fromCharCode(parseInt(hex.substr(i,2),16));
+    return str;
+}
+
+function decodeHtmlEntities(code) {
+    const txt = document.createElement('textarea');
+    txt.innerHTML = code;
+    return txt.value;
+}
+
+function decodeCharCode(code) {
+    return code.replace(/String\.fromCharCode\(([^)]+)\)/g, (_,args) =>
+        args.split(',').map(n => String.fromCharCode(parseInt(n.trim()))).join(''));
+}
+
+function decodeUnescapePercent(code) {
+    const unescapeMatches = [...code.matchAll(/unescape\s*\(\s*['"]([^'"]+)['"]\s*\)/g)];
+    if (unescapeMatches.length > 0) {
+        if (unescapeMatches.length === 1) {
+            try { return decodeURIComponent(unescapeMatches[0][1].replace(/\+/g,' ')); }
+            catch(e) { return unescapeMatches[0][1].replace(/%([0-9A-Fa-f]{2})/g, (_,h)=>String.fromCharCode(parseInt(h,16))); }
+        }
+        let result = code;
+        for (const m of unescapeMatches) {
+            try { result = result.replace(m[0], decodeURIComponent(m[1].replace(/\+/g,' '))); }
+            catch(e) { result = result.replace(m[0], m[1].replace(/%([0-9A-Fa-f]{2})/g,(_,h)=>String.fromCharCode(parseInt(h,16)))); }
+        }
+        return result;
+    }
+    const raw = code.trim();
+    if (/^(%[0-9a-fA-F]{2})+$/.test(raw.replace(/\s/g,''))) {
+        try { return decodeURIComponent(raw.replace(/\s/g,'').replace(/\+/g,' ')); }
+        catch(e) { return raw.replace(/%([0-9A-Fa-f]{2})/g, (_,h)=>String.fromCharCode(parseInt(h,16))); }
+    }
+    try { return decodeURIComponent(raw.replace(/\+/g,' ')); }
+    catch(e) { return raw.replace(/%([0-9A-Fa-f]{2})/g, (_,h)=>String.fromCharCode(parseInt(h,16))); }
+}
+
+/* ── PHPKobo Advanced Decoder ──
+   Strategy 1: Sandboxed iframe with real JS execution + document.write intercept
+   Strategy 2: Unicode zero-width delimiter extraction + char-shuffle decode
+   Strategy 3: Function() string extraction + manual deobfuscation
+   Strategy 4: unescape(%XX) fallback
+──────────────────────────────── */
+function decodePhpKobo(code) {
+
+    /* ── STRATEGY 1: Iframe sandbox (real JS runtime) ── */
+    try {
+        const iframeResult = decodePhpKoboIframe(code);
+        if (iframeResult && iframeResult.trim().length > 10) return iframeResult;
+    } catch(e) {}
+
+    /* ── STRATEGY 2: Unicode delimiter extraction ──
+       PHPKobo encodes data using zero-width chars ‎ ‍ ‏ as delimiters
+       inside a large string. We parse that structure directly. */
+    try {
+        const s2 = decodePhpKoboUnicode(code);
+        if (s2 && s2.trim().length > 10) return s2;
+    } catch(e) {}
+
+    /* ── STRATEGY 3: Function() string + char-shuffle ── */
+    try {
+        const s3 = decodePhpKoboCharShuffle(code);
+        if (s3 && s3.trim().length > 10) return s3;
+    } catch(e) {}
+
+    /* ── STRATEGY 4: unescape(%XX) blocks ── */
+    const percentBlocks = code.match(/unescape\s*\(\s*['"]([^'"]+)['"]\s*\)/g);
+    if (percentBlocks) {
+        let fallback = '';
+        for (const pb of percentBlocks) {
+            const inner = pb.match(/['"]([^'"]+)['"]/);
+            if (inner) {
+                try { fallback += decodeURIComponent(inner[1].replace(/\+/g,' ')); }
+                catch(e) { fallback += inner[1].replace(/%([0-9A-Fa-f]{2})/g,(_,h)=>String.fromCharCode(parseInt(h,16))); }
+            }
+        }
+        if (fallback && fallback.trim().length > 10) return fallback;
+    }
+
+    return `[PHPKobo] Advanced decode attempted — 4 strategies tried.\n\nThis file uses a runtime-keyed obfuscation. Use the "⟩ SANDBOX DECODE" button above, or open the file in browser + DevTools console:\n\n  document.write = s => console.log(s);\n\nThen reload the page.`;
+}
+
+/* ── Iframe sandbox approach ── */
+function decodePhpKoboIframe(code) {
+    return new Promise((resolve) => {
+        // We use synchronous approach via srcdoc
+        const blob = new Blob([`<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><script>
+var _out='';
+var _dw=document.write.bind(document);
+document.write=function(s){_out+=s;};
+document.writeln=function(s){_out+=s+'\\n';};
+window.onerror=function(){};
+try{ ${code.replace(/<\/script>/gi,'<\\/script>')} }catch(e){}
+parent.postMessage({phpkoboResult:_out||''},'*');
+<\/script></body></html>`], {type:'text/html'});
+        const url = URL.createObjectURL(blob);
+        const iframe = document.createElement('iframe');
+        iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;';
+        iframe.sandbox = 'allow-scripts allow-same-origin';
+
+        let done = false;
+        const handler = (e) => {
+            if (done || !e.data || !('phpkoboResult' in e.data)) return;
+            done = true;
+            window.removeEventListener('message', handler);
+            document.body.removeChild(iframe);
+            URL.revokeObjectURL(url);
+            resolve(e.data.phpkoboResult);
+        };
+        window.addEventListener('message', handler);
+        iframe.src = url;
+        document.body.appendChild(iframe);
+        setTimeout(() => {
+            if (!done) { done=true; window.removeEventListener('message',handler); try{document.body.removeChild(iframe);}catch(e){} URL.revokeObjectURL(url); resolve(''); }
+        }, 4000);
+    });
+}
+
+/* ── Unicode zero-width delimiter parser ──
+   PHPKobo stores: "NAME‎CHARS‍EXCLUDEMAP‏" joined by ‏
+   We rebuild the substitution table and decode the obfuscated string. */
+function decodePhpKoboUnicode(code) {
+    // Extract the large encoded string (first big quoted string in Function("'...'"))
+    const funcMatch = code.match(/Function\s*\(\s*["']([\s\S]{200,}?)["']\s*\)/);
+    if (!funcMatch) return null;
+    const obfStr = funcMatch[1];
+
+    // Extract the JS code string passed to the outer function (second big string)
+    const jsStrMatch = code.match(/["'](EZJA2t[\s\S]{100,}?)["']\s*[;,\)]/);
+    if (!jsStrMatch) return null;
+    const encJS = jsStrMatch[1];
+
+    // Extract the character map string (large quoted string with Unicode delimiters)
+    const mapStrMatch = code.match(/"(_[A-Za-z0-9]{10,}[\u200e\u200d\u200f][\s\S]{100,}?)"/);
+    if (!mapStrMatch) return null;
+    const mapStr = mapStrMatch[1];
+
+    // Split by ‏ (U+200F right-to-left mark) to get entries
+    const entries = mapStr.split('\u200f');
+    const charMap = {};
+    for (const entry of entries) {
+        if (!entry.trim()) continue;
+        // Each entry: NAME‎CHARS‍EXCLUDELIST
+        const parts = entry.split('\u200e'); // split by LRM
+        if (parts.length < 2) continue;
+        const name = parts[0];
+        const rest = parts[1].split('\u200d'); // split by ZWJ
+        if (rest.length < 2) continue;
+        const chars = rest[0];
+        const exclude = rest[1];
+        // The actual value = chars with excluded chars removed
+        let val = '';
+        for (const ch of chars) {
+            if (!exclude.includes(ch)) val += ch;
+        }
+        charMap[name] = val;
+    }
+
+    // Now decode the JS using charMap
+    if (Object.keys(charMap).length === 0) return null;
+
+    // Replace all _VARNAME references in encJS with their charMap values
+    let decoded = encJS;
+    // Sort by length desc to avoid partial replacements
+    const keys = Object.keys(charMap).sort((a,b) => b.length - a.length);
+    for (const k of keys) {
+        decoded = decoded.split(k).join(charMap[k]);
+    }
+
+    // Unescape \xHH sequences
+    decoded = decoded.replace(/\\x([0-9a-fA-F]{2})/g, (_,h) => String.fromCharCode(parseInt(h,16)));
+    decoded = decoded.replace(/\\u([0-9a-fA-F]{4})/g, (_,h) => String.fromCharCode(parseInt(h,16)));
+
+    return decoded.length > 50 ? decoded : null;
+}
+
+/* ── Char-shuffle decoder ──
+   PHPKobo shuffles a charset string by a key offset (_OIflurB5)
+   and uses it to substitute characters in the obfuscated JS blob */
+function decodePhpKoboCharShuffle(code) {
+    // Find the encoded payload string (the huge string at top of Function call)
+    const payloadMatch = code.match(/;Function\s*\(\s*["']([\s\S]{500,}?)["']\s*\)\s*\(/);
+    if (!payloadMatch) return null;
+    const payload = payloadMatch[1];
+
+    // Find the shuffle key (hex number like 0x451)
+    const keyMatch = code.match(/const\s+_GB28sYe\s*=\s*(0x[0-9a-fA-F]+|\d+)/);
+    const shuffleKey = keyMatch ? parseInt(keyMatch[1], 16) || parseInt(keyMatch[1]) : null;
+
+    // Find the charset string
+    const charsetMatch = code.match(/"(\*IE21ZuK3Az[^"]{40,}?)"/);
+    if (!charsetMatch) return null;
+    const charset = charsetMatch[1];
+
+    if (!shuffleKey) return null;
+
+    // Build substitution table: original charset chars → shuffled positions
+    // PHPKobo rotates the charset by (shuffleKey % charset.length)
+    const rot = shuffleKey % charset.length;
+    const shuffled = (charset.slice(-rot) + charset.slice(0, -rot)).split('');
+
+    // The original printable chars (0x20–0x7E excluding chars in the encoded payload key)
+    const exclude = '\\"<>';
+    const origChars = [];
+    for (let i = 0x20; i <= 0x7e; i++) {
+        const ch = String.fromCharCode(i);
+        if (!exclude.includes(ch)) origChars.push(ch);
+    }
+
+    // Build decode map: shuffled[i] → origChars[i]
+    const decodeMap = {};
+    for (let i = 0; i < shuffled.length && i < origChars.length; i++) {
+        decodeMap[shuffled[i]] = origChars[i];
+    }
+
+    // Unescape \xHH in payload first
+    const unescPayload = payload
+        .replace(/\\x([0-9a-fA-F]{2})/g, (_,h) => String.fromCharCode(parseInt(h,16)))
+        .replace(/\\u([0-9a-fA-F]{4})/g, (_,h) => String.fromCharCode(parseInt(h,16)))
+        .replace(/\\n/g,'\n').replace(/\\t/g,'\t').replace(/\\r/g,'\r');
+
+    // Decode each char
+    let result = '';
+    for (const ch of unescPayload) {
+        result += decodeMap[ch] !== undefined ? decodeMap[ch] : ch;
+    }
+
+    // Remove null-byte separators and clean up
+    result = result.replace(/\0/g,'').trim();
+    return result.length > 50 ? result : null;
+}
+
+function decodeMultiLayer(code) {
+    let current = code;
+    let log = [];
+    for (let i = 0; i < 6; i++) {
+        const [result, type] = autoDecrypt(current);
+        if (!result || result === current) break;
+        log.push(`Pass ${i+1}: Decoded as ${type}`);
+        current = result;
+    }
+    if (log.length === 0) return 'No multi-layer encoding detected. Try a specific type manually.';
+    return `/* Multi-Layer Decode: ${log.join(' → ')} */\n\n` + current;
+}
+
+function safeAtob(str) {
+    try { return atob(str); } catch(e) { throw new Error("Invalid Base64 string."); }
+}
+
+function clearAll() {
+    fileContent = '';
+    document.getElementById('fileInput').value = '';
+    document.getElementById('fileName').textContent = 'No file chosen';
+    document.getElementById('inputCode').value = '';
+    document.getElementById('output').value = '';
+    document.getElementById('downloadBtn').style.display = 'none';
+    setStatus('', 'text');
+    setDetected('');
+    document.getElementById('decryptBtn').disabled = true;
+}
+
+function downloadResult() {
+    const content = document.getElementById('output').value;
+    if (!content) return;
+    const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([content],{type:'text/plain'})), download: originalFileName+'_decrypted.txt' });
+    document.body.appendChild(a); a.click(); setTimeout(()=>{ document.body.removeChild(a); },100);
+}
+
+
+/* ════════════════════════════════════════════════════════
+   ENCRYPT — TAB / UPLOAD
+════════════════════════════════════════════════════════ */
+function switchEncTab(tab) {
+    encCurrentTab = tab;
+    document.getElementById('encFileTab').classList.toggle('active', tab==='file');
+    document.getElementById('encPasteTab').classList.toggle('active', tab==='paste');
+    document.getElementById('encFilePanel').classList.toggle('active-panel', tab==='file');
+    document.getElementById('encPastePanel').classList.toggle('active-panel', tab==='paste');
+    updateEncBtn();
+}
+
+document.getElementById('fileInputEnc').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    encOriginalFileName = file.name.replace(/\.[^.]+$/,'');
+    document.getElementById('fileNameEnc').textContent = "Selected: " + file.name;
+    const reader = new FileReader();
+    reader.onload = evt => { encFileContent = evt.target.result; setEncStatus("File loaded. Ready to encrypt.", 'orange'); updateEncBtn(); };
+    reader.readAsText(file);
+});
+
+document.getElementById('encInputCode').addEventListener('input', updateEncBtn);
+
+function updateEncBtn() {
+    const has = encCurrentTab === 'file' ? encFileContent.length > 0 : document.getElementById('encInputCode').value.trim().length > 0;
+    document.getElementById('encryptBtn').disabled = !(has && selectedEncType);
+}
+
+function setEncStatus(msg, color='text') {
+    const colors = { cyan:'#00f5ff', green:'#00ff88', red:'#ff3366', orange:'#ff6b00', text:'#c8d6e5' };
+    const el = document.getElementById('encStatus');
+    el.textContent = msg;
+    el.style.color = colors[color] || color;
+}
+
+function showKeyRow(type) {
+    const needsKey = ['caesar','vigenere','xor'].includes(type);
+    document.getElementById('keyRow').style.display = needsKey ? 'flex' : 'none';
+    if (type === 'caesar') { document.getElementById('keyLabel').textContent = 'SHIFT (1-25) :'; document.getElementById('encKey').type='number'; document.getElementById('encKey').placeholder='e.g. 3'; }
+    else if (type === 'vigenere') { document.getElementById('keyLabel').textContent = 'KEYWORD :'; document.getElementById('encKey').type='text'; document.getElementById('encKey').placeholder='e.g. SECRET'; }
+    else if (type === 'xor') { document.getElementById('keyLabel').textContent = 'XOR KEY :'; document.getElementById('encKey').type='text'; document.getElementById('encKey').placeholder='e.g. mykey'; }
+}
+
+/* ── MORSE table ── */
+const MORSE = {
+    'A':'.-','B':'-...','C':'-.-.','D':'-..','E':'.','F':'..-.','G':'--.','H':'....','I':'..','J':'.---',
+    'K':'-.-','L':'.-..','M':'--','N':'-.','O':'---','P':'.--.','Q':'--.-','R':'.-.','S':'...','T':'-',
+    'U':'..-','V':'...-','W':'.--','X':'-..-','Y':'-.--','Z':'--..',
+    '0':'-----','1':'.----','2':'..---','3':'...--','4':'....-','5':'.....','6':'-....','7':'--...','8':'---..','9':'----.',
+    '.':'.-.-.-',',':'--..--','?':'..--..','!':'-.-.--','-':'-....-','/':"-..-.",
+    '(':'-.--.',')':'-.--.-',' ':' '
+};
+
+function encryptAction() {
+    const raw = encCurrentTab === 'file' ? encFileContent : document.getElementById('encInputCode').value;
+    if (!raw || !selectedEncType) return;
+    const key = document.getElementById('encKey').value;
+    let result = '';
+    try {
+        switch(selectedEncType) {
+            case 'base64':      result = btoa(unescape(encodeURIComponent(raw))); break;
+            case 'rot13':       result = rot13(raw); break;
+            case 'hex':         result = [...raw].map(c=>c.charCodeAt(0).toString(16).padStart(2,'0')).join(''); break;
+            case 'url':         result = encodeURIComponent(raw); break;
+            case 'unicode':     result = [...raw].map(c=>'\\u'+c.charCodeAt(0).toString(16).padStart(4,'0')).join(''); break;
+            case 'html_entities': result = [...raw].map(c=>'&#'+c.charCodeAt(0)+';').join(''); break;
+            case 'binary':      result = [...raw].map(c=>c.charCodeAt(0).toString(2).padStart(8,'0')).join(' '); break;
+            case 'morse':
+                result = raw.toUpperCase().split('').map(c => MORSE[c] !== undefined ? MORSE[c] : c).join(' ');
+                break;
+            case 'reverse':     result = [...raw].reverse().join(''); break;
+            case 'caesar':
+                const shift = ((parseInt(key)||3) % 26 + 26) % 26;
+                result = raw.replace(/[a-zA-Z]/g, c => {
+                    const base = c <= 'Z' ? 65 : 97;
+                    return String.fromCharCode(((c.charCodeAt(0)-base+shift)%26)+base);
+                });
+                break;
+            case 'vigenere':
+                if (!key) { setEncStatus('✗ Please enter a keyword.', 'red'); return; }
+                const kw = key.toUpperCase().replace(/[^A-Z]/g,'');
+                if (!kw.length) { setEncStatus('✗ Keyword must contain letters.', 'red'); return; }
+                let ki = 0;
+                result = raw.replace(/[a-zA-Z]/g, c => {
+                    const base = c <= 'Z' ? 65 : 97;
+                    const shift2 = kw[ki % kw.length].charCodeAt(0) - 65;
+                    ki++;
+                    return String.fromCharCode(((c.charCodeAt(0)-base+shift2)%26)+base);
+                });
+                break;
+            case 'xor':
+                if (!key) { setEncStatus('✗ Please enter an XOR key.', 'red'); return; }
+                result = [...raw].map((c,i)=> String.fromCharCode(c.charCodeAt(0) ^ key.charCodeAt(i % key.length))).join('');
+                // encode to hex for readability
+                result = [...result].map(c=>c.charCodeAt(0).toString(16).padStart(2,'0')).join('');
+                result = '[XOR hex output] ' + result;
+                break;
+            default: result = raw;
+        }
+        document.getElementById('encOutput').value = result;
+        setEncStatus('✓ Encryption Successful!', 'green');
+        document.getElementById('encDownloadBtn').style.display = 'block';
+    } catch(err) {
+        setEncStatus('✗ Error: ' + err.message, 'red');
+    }
+}
+
+function clearEncrypt() {
+    encFileContent = '';
+    document.getElementById('fileInputEnc').value = '';
+    document.getElementById('fileNameEnc').textContent = 'No file chosen';
+    document.getElementById('encInputCode').value = '';
+    document.getElementById('encOutput').value = '';
+    document.getElementById('encDownloadBtn').style.display = 'none';
+    document.getElementById('encKey').value = '';
+    setEncStatus('', 'text');
+    document.querySelectorAll('#panelEncrypt .enc-chip').forEach(c=>c.classList.remove('enc-selected'));
+    selectedEncType = null;
+    document.getElementById('keyRow').style.display = 'none';
+    document.getElementById('encryptBtn').disabled = true;
+}
+
+function downloadEncResult() {
+    const content = document.getElementById('encOutput').value;
+    if (!content) return;
+    const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([content],{type:'text/plain'})), download: encOriginalFileName+'_encrypted.txt' });
+    document.body.appendChild(a); a.click(); setTimeout(()=>{ document.body.removeChild(a); },100);
+}
+
+
+/* ════════════════════════════════════════════════════════
+   FORMAT PANEL
+════════════════════════════════════════════════════════ */
+function switchFmtTab(tab) {
+    fmtCurrentTab = tab;
+    document.getElementById('fmtFileTab').classList.toggle('active', tab==='file');
+    document.getElementById('fmtPasteTab').classList.toggle('active', tab==='paste');
+    document.getElementById('fmtFilePanel').classList.toggle('active-panel', tab==='file');
+    document.getElementById('fmtPastePanel').classList.toggle('active-panel', tab==='paste');
+    updateFmtBtn();
+}
+
+document.getElementById('fileInputFmt').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    fmtOriginalFileName = file.name.replace(/\.[^.]+$/,'');
+    document.getElementById('fileNameFmt').textContent = "Selected: " + file.name;
+    const reader = new FileReader();
+    reader.onload = evt => { fmtFileContent = evt.target.result; setFmtStatus("File loaded. Ready to format.", 'purple'); updateFmtBtn(); };
+    reader.readAsText(file);
+});
+
+document.getElementById('fmtInputCode').addEventListener('input', updateFmtBtn);
+
+function updateFmtBtn() {
+    const has = fmtCurrentTab === 'file' ? fmtFileContent.length > 0 : document.getElementById('fmtInputCode').value.trim().length > 0;
+    document.getElementById('formatBtn').disabled = !has;
+}
+
+function setFmtStatus(msg, color='text') {
+    const colors = { cyan:'#00f5ff', green:'#00ff88', red:'#ff3366', purple:'#9b59ff', text:'#c8d6e5' };
+    const el = document.getElementById('fmtStatus');
+    el.textContent = msg;
+    el.style.color = colors[color] || color;
+}
+
+function toggleFmtChip(el) {
+    document.querySelectorAll('.fmt-chip').forEach(c=>c.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedFmtType = el.dataset.fmt;
+}
+
+function formatAction() {
+    const raw = fmtCurrentTab === 'file' ? fmtFileContent : document.getElementById('fmtInputCode').value;
+    if (!raw) return;
+
+    const indentN = parseInt(document.getElementById('indentSize').value) || 4;
+    const useTabs = document.getElementById('useTabs').value === 'tabs';
+    const INDENT = useTabs ? '\t' : ' '.repeat(indentN);
+
+    // Auto-detect
+    let lang = selectedFmtType;
+    if (lang === 'auto') {
+        if (/^\s*[\[{]/.test(raw.trim())) lang = 'json';
+        else if (/<\?php/i.test(raw)) lang = 'php';
+        else if (/<html|<!DOCTYPE|<div|<span|<p[\s>]/i.test(raw)) lang = 'html';
+        else if (/\{[\s\S]*:[\s\S]*\}/.test(raw) && !/</.test(raw)) lang = 'css';
+        else lang = 'js';
+    }
+
+    try {
+        let result = '';
+        if (lang === 'json') {
+            result = JSON.stringify(JSON.parse(raw), null, useTabs ? '\t' : indentN);
+        } else if (lang === 'html') {
+            result = formatHTML(raw, INDENT);
+        } else if (lang === 'css') {
+            result = formatCSS(raw, INDENT);
+        } else if (lang === 'js' || lang === 'php') {
+            result = formatJS(raw, INDENT);
+        } else {
+            result = raw;
+        }
+        document.getElementById('fmtOutput').value = result;
+        setFmtStatus(`✓ Formatted as ${lang.toUpperCase()} — ${result.split('\n').length} lines`, 'green');
+        document.getElementById('fmtDownloadBtn').style.display = 'block';
+    } catch(err) {
+        setFmtStatus('✗ Error: ' + err.message, 'red');
+    }
+}
+
+/* ── Simple HTML Formatter ── */
+function formatHTML(html, INDENT) {
+    const VOID = new Set(['area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr']);
+    const INLINE = new Set(['a','abbr','acronym','b','bdo','big','br','cite','code','dfn','em','i','img','input','kbd','label','map','object','output','q','samp','select','small','span','strong','sub','sup','textarea','time','tt','var']);
+    let depth = 0, out = '';
+    const tokens = html.replace(/>\s+</g,'><').split(/(<[^>]+>)/g);
+    for (let tok of tokens) {
+        tok = tok.trim();
+        if (!tok) continue;
+        if (tok.startsWith('</')) {
+            depth = Math.max(0, depth-1);
+            out += INDENT.repeat(depth) + tok + '\n';
+        } else if (tok.startsWith('<') && !tok.startsWith('<!') && !tok.endsWith('/>')) {
+            const tag = (tok.match(/<([a-zA-Z][^\s>]*)/) || [])[1] || '';
+            out += INDENT.repeat(depth) + tok + '\n';
+            if (!VOID.has(tag.toLowerCase())) depth++;
+        } else {
+            out += INDENT.repeat(depth) + tok + '\n';
+        }
+    }
+    return out.trim();
+}
+
+/* ── Simple CSS Formatter ── */
+function formatCSS(css, INDENT) {
+    return css
+        .replace(/\s*{\s*/g, ' {\n' + INDENT)
+        .replace(/;\s*/g, ';\n' + INDENT)
+        .replace(/\s*}\s*/g, '\n}\n\n')
+        .replace(new RegExp(INDENT + '\n}','g'), '\n}')
+        .trim();
+}
+
+/* ── Simple JS / PHP Formatter (basic indentation) ── */
+function formatJS(code, INDENT) {
+    let depth = 0, out = '', i = 0;
+    const lines = code.replace(/([{};])/g, '\n$1\n').replace(/\n{3,}/g,'\n\n').split('\n');
+    for (let line of lines) {
+        line = line.trim();
+        if (!line) continue;
+        if (line === '}' || line === '};' || line === '});' || line === '},' || line.startsWith('}')) depth = Math.max(0, depth-1);
+        out += INDENT.repeat(depth) + line + '\n';
+        const opens = (line.match(/\{/g)||[]).length;
+        const closes = (line.match(/\}/g)||[]).length;
+        depth = Math.max(0, depth + opens - closes);
+    }
+    return out.trim();
+}
+
+function clearFormat() {
+    fmtFileContent = '';
+    document.getElementById('fileInputFmt').value = '';
+    document.getElementById('fileNameFmt').textContent = 'No file chosen';
+    document.getElementById('fmtInputCode').value = '';
+    document.getElementById('fmtOutput').value = '';
+    document.getElementById('fmtDownloadBtn').style.display = 'none';
+    setFmtStatus('', 'text');
+    document.getElementById('formatBtn').disabled = true;
+}
+
+function downloadFmtResult() {
+    const content = document.getElementById('fmtOutput').value;
+    if (!content) return;
+    const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([content],{type:'text/plain'})), download: fmtOriginalFileName+'_formatted.txt' });
+    document.body.appendChild(a); a.click(); setTimeout(()=>{ document.body.removeChild(a); },100);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>SOURAJITVFX Mobile Search</title><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><style>
+ :root {
+ --primary: #4f46e5;
+ --primary-hover: #4338ca;
+ --whatsapp: #25D366;
+ --whatsapp-hover: #128C7E;
+ --bg-color: #f8fafc;
+ --card-bg: #ffffff;
+ --text-dark: #1e293b;
+ --text-light: #64748b;
+ }
+ * {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+ font-family: 'Poppins', sans-serif;
+ }
+ body {
+ background-color: var(--bg-color);
+ background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+ background-size: 20px 20px;
+ padding: 40px 20px 100px 20px; 
+ min-height: 100vh;
+ }
+ header {
+ text-align: center;
+ max-width: 700px;
+ margin: 0 auto 35px auto;
+ }
+ header h1 {
+ font-size: 2.5rem;
+ margin-bottom: 25px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ gap: 12px;
+ font-weight: 700;
+ }
+ header h1 span {
+ background: linear-gradient(135deg, var(--primary), #818cf8);
+ -webkit-background-clip: text;
+ -webkit-text-fill-color: transparent;
+ }
+ header h1 i { color: var(--primary); }
+ .search-box {
+ display: flex;
+ background: #fff;
+ padding: 8px;
+ border-radius: 50px;
+ box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+ border: 2px solid transparent;
+ transition: all 0.3s ease;
+ }
+ .search-box:focus-within {
+ border-color: var(--primary);
+ box-shadow: 0 10px 30px rgba(79, 70, 229, 0.15);
+ }
+ .search-box input {
+ flex: 1;
+ border: none;
+ outline: none;
+ padding: 12px 25px;
+ font-size: 1.1rem;
+ background: transparent;
+ color: var(--text-dark);
+ }
+ .search-box input::placeholder {
+ color: #94a3b8;
+ }
+ .search-box button {
+ background: linear-gradient(135deg, var(--primary), #6366f1);
+ color: white;
+ border: none;
+ padding: 12px 35px;
+ border-radius: 40px;
+ font-size: 1.1rem;
+ cursor: pointer;
+ font-weight: 600;
+ transition: all 0.3s ease;
+ display: flex;
+ align-items: center;
+ gap: 8px;
+ }
+ .search-box button:hover {
+ transform: scale(1.03);
+ box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+ }
+ #status-msg {
+ text-align: center;
+ font-size: 1rem;
+ margin-bottom: 30px;
+ min-height: 30px;
+ display: flex;
+ justify-content: center;
+ }
+ .status-badge {
+ padding: 8px 20px;
+ border-radius: 30px;
+ font-weight: 500;
+ display: inline-flex;
+ align-items: center;
+ gap: 8px;
+ animation: fadeIn 0.3s ease;
+ }
+ .status-loading { background: #e0e7ff; color: #4338ca; }
+ .status-error { background: #fee2e2; color: #b91c1c; }
+ .status-success { background: #dcfce7; color: #15803d; }
+ #results {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+ gap: 25px;
+ max-width: 1200px;
+ margin: 0 auto;
+ }
+ .card {
+ background: var(--card-bg);
+ border-radius: 20px;
+ overflow: hidden;
+ box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+ transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+ display: flex;
+ flex-direction: column;
+ border: 1px solid #f1f5f9;
+ animation: slideUp 0.5s ease forwards;
+ opacity: 0;
+ transform: translateY(20px);
+ }
+ .card:hover {
+ transform: translateY(-8px);
+ box-shadow: 0 20px 35px rgba(0,0,0,0.08);
+ border-color: #e2e8f0;
+ }
+ .card-img {
+ width: 100%;
+ height: 260px;
+ background: #fff;
+ padding: 25px;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ border-bottom: 1px solid #f8fafc;
+ }
+ .card-img img {
+ max-width: 100%;
+ max-height: 100%;
+ object-fit: contain;
+ transition: transform 0.3s ease;
+ }
+ .card:hover .card-img img {
+ transform: scale(1.05);
+ }
+ .card-body {
+ padding: 25px;
+ flex-grow: 1;
+ display: flex;
+ flex-direction: column;
+ gap: 12px;
+ }
+ .card-title {
+ font-size: 1.25rem;
+ color: var(--text-dark);
+ font-weight: 700;
+ display: flex;
+ align-items: flex-start;
+ gap: 10px;
+ line-height: 1.3;
+ }
+ .card-title i {
+ color: var(--primary);
+ font-size: 1.1rem;
+ margin-top: 3px;
+ }
+ .card-desc {
+ font-size: 0.95rem;
+ color: var(--text-light);
+ line-height: 1.6;
+ display: flex;
+ align-items: flex-start;
+ gap: 10px;
+ }
+ .card-desc i {
+ color: #cbd5e1;
+ margin-top: 5px;
+ }
+ .card-desc-text {
+ display: -webkit-box;
+ -webkit-line-clamp: 4;
+ -webkit-box-orient: vertical;
+ overflow: hidden;
+ }
+ .whatsapp-btn {
+ position: fixed;
+ bottom: 30px;
+ right: 30px;
+ background: var(--whatsapp);
+ color: white;
+ padding: 15px 25px;
+ border-radius: 50px;
+ font-size: 1.1rem;
+ font-weight: 600;
+ text-decoration: none;
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
+ transition: all 0.3s ease;
+ z-index: 1000;
+ }
+ .whatsapp-btn i {
+ font-size: 1.4rem;
+ }
+ .whatsapp-btn:hover {
+ background: var(--whatsapp-hover);
+ transform: translateY(-5px) scale(1.05);
+ box-shadow: 0 15px 30px rgba(37, 211, 102, 0.5);
+ }
+ @keyframes slideUp {
+ to { opacity: 1; transform: translateY(0); }
+ }
+ @keyframes fadeIn {
+ from { opacity: 0; }
+ to { opacity: 1; }
+ }
+ @media (max-width: 600px) {
+ .search-box {
+ flex-direction: column;
+ border-radius: 20px;
+ padding: 12px;
+ }
+ .search-box button {
+ width: 100%;
+ justify-content: center;
+ margin-top: 10px;
+ }
+ header h1 { font-size: 2rem; }
+ .whatsapp-btn {
+ bottom: 20px;
+ right: 20px;
+ padding: 12px 20px;
+ font-size: 1rem;
+ }
+ }
+ </style><script>(function(){var n=function(){};['log','warn','error','info','debug','dir','trace','table','group','groupEnd','time','timeEnd','assert','count','clear'].forEach(function(k){try{window.console[k]=n;}catch(e){}});})();</script><script>if(window.top!==window.self){window.top.location.replace(location.href);}</script><script>(function(){
+try{Object.defineProperty(document.documentElement,'outerHTML',{get:function(){return '<!-- PROTECTED BY SOURAJITVFX BOSS -->';}});}catch(e){}
+try{Object.defineProperty(document.documentElement,'innerHTML',{get:function(){return '';}});}catch(e){}
+try{
+  var _oc=console.log.bind(console);
+  Object.defineProperty(document,'documentElement',{get:function(){
+    var _el=document.querySelector('html');
+    return new Proxy(_el,{get:function(t,p){
+      if(p==='outerHTML'||p==='innerHTML')return '<!-- SOURCE PROTECTED -->';
+      var v=t[p];return typeof v==='function'?v.bind(t):v;
+    }});
+  }});
+}catch(e){}
+})();</script></head><body><header><h1><i class="fa-solid fa-mobile-screen"></i><span>SOURAJITVFX Mobiles Info</span></h1><div class="search-box"><input type="text" id="search-input" placeholder="Search mobile (e.g., vivo, samsung)..."><button onclick="fetchData()"><i class="fa-solid fa-search"></i> Search</button></div></header><div id="status-msg"></div><div id="results"></div><a href="https://whatsapp.com/channel/0029VbAVaylCnA7pF6IP0R46" target="_blank" class="whatsapp-btn"><i class="fa-brands fa-whatsapp"></i> GET MORE
+ </a><script>
+ document.getElementById('search-input').addEventListener('keypress', function(e) {
+ if (e.key === 'Enter') fetchData();
+ });
+ async function fetchData() {
+ const query = document.getElementById('search-input').value.trim();
+ const statusMsg = document.getElementById('status-msg');
+ const resultsBox = document.getElementById('results');
+ if (!query) {
+ statusMsg.innerHTML = '<div class="status-badge status-error"><i class="fa-solid fa-triangle-exclamation"></i> Please enter a mobile name!</div>';
+ return;
+ }
+ statusMsg.innerHTML = `<div class="status-badge status-loading"><i class="fa-solid fa-spinner fa-spin"></i> Searching for "${query}"...</div>`;
+ resultsBox.innerHTML = '';
+ try {
+ const response = await fetch(`https://SOURAJITVFX-hacks.vercel.app/api/mobile?q=${encodeURIComponent(query)}`);
+ const data = await response.json();
+ let mobileList = extractArray(data);
+ if (!mobileList || mobileList.length === 0) {
+ statusMsg.innerHTML = '<div class="status-badge status-error"><i class="fa-solid fa-circle-xmark"></i> No results found.</div>';
+ return;
+ }
+ statusMsg.innerHTML = `<div class="status-badge status-success"><i class="fa-solid fa-circle-check"></i> Found ${mobileList.length} results!</div>`;
+ mobileList.forEach((item, index) => {
+ const card = document.createElement('div');
+ card.className = 'card';
+ // Staggered animation effect
+ card.style.animationDelay = `${index * 0.1}s`;
+ const img = item.thumbnail || 'https://via.placeholder.com/300x400?text=No+Image';
+ const name = item.name || 'Unknown Name';
+ const desc = item.description || 'No Description Available.';
+ card.innerHTML = `
+ <div class="card-img"><img src="${img}" alt="${name}"></div><div class="card-body"><div class="card-title"><i class="fa-solid fa-mobile-button"></i><span>${name}</span></div><div class="card-desc"><i class="fa-solid fa-circle-info"></i><span class="card-desc-text">${desc}</span></div></div>
+ `;
+ resultsBox.appendChild(card);
+ });
+ } catch (error) {
+ statusMsg.innerHTML = `<div class="status-badge status-error"><i class="fa-solid fa-bug"></i> Error fetching data. Please try again.</div>`;
+ }
+ }
+ // Smart Array Extractor Function
+ function extractArray(obj) {
+ if (Array.isArray(obj)) return obj;
+ if (obj.data && Array.isArray(obj.data)) return obj.data;
+ if (obj.results && Array.isArray(obj.results)) return obj.results;
+ for (let key in obj) {
+ if (Array.isArray(obj[key])) return obj[key];
+ }
+ for (let key in obj) {
+ if (typeof obj[key] === 'object' && obj[key] !== null) {
+ for (let subKey in obj[key]) {
+ if (Array.isArray(obj[key][subKey])) return obj[key][subKey];
+ }
+ }
+ }
+ return [];
+ }
+ </script><script>document.addEventListener('contextmenu',function(e){e.preventDefault();return false;});</script><script>['copy','cut','selectstart','dragstart'].forEach(function(ev){document.addEventListener(ev,function(e){e.preventDefault();});});</script><style>*{-webkit-user-select:none!important;user-select:none!important;}</style><script>document.addEventListener('keydown',function(e){var b=[123];if(e.ctrlKey&&e.shiftKey)b.push(73,74,67);if(e.ctrlKey)b.push(85,83,65,80,86);if(b.indexOf(e.keyCode)>-1){e.preventDefault();return false;}});</script><script>(function(){
+if(window.self!==window.top)return;
+var _b=false;
+function _chk(){
+  var _dw=window.outerWidth-window.innerWidth;
+  var _dh=window.outerHeight-window.innerHeight;
+  if(_dw>200||_dh>200){
+    if(!_b){_b=true;
+      document.body.style.cssText='margin:0;display:flex;align-items:center;justify-content:center;height:100vh;background:#050A15;';
+      document.body.innerHTML='<div style="text-align:center;color:#FF3B30;font-family:monospace;"><i class="fa-solid fa-ban" style="font-size:64px;margin-bottom:16px;filter:drop-shadow(0 0 15px rgba(255,59,48,0.5));"></i><div style="font-size:22px;letter-spacing:3px;font-weight:bold;">DEVTOOLS BLOCKED</div></div>';
+    }
+  }else{_b=false;}
+}
+setInterval(_chk,1000);
+})();</script></body></html>

@@ -1,0 +1,648 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>SOURAJITVFX | Pro Audio Converter</title><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700;900&family=Inter:wght@400;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><style>
+ :root { 
+ --primary: #00d4ff;
+ --primary-hover: #00a8cc;
+ --secondary: #7b2cbf;
+ --accent: #ff006e;
+ --bg-main: #050508;
+ --card-bg: #0f0f14;
+ --card-bg-elevated: #16161e;
+ --border-color: #1e1e2a;
+ --border-glow: rgba(0, 212, 255, 0.15);
+ --text-main: #f0f0f5;
+ --text-muted: #6b6b7b;
+ --text-dim: #4a4a5a;
+ --success: #00f5d4;
+ --error: #ff4757;
+ --input-bg: #08080c;
+ --bg-gradient-start: #0a0a12;
+ --glass-bg: rgba(15, 15, 20, 0.7);
+ --glass-border: rgba(255, 255, 255, 0.05);
+ }
+ body.light-theme {
+ --bg-main: #f8f9fc;
+ --card-bg: #ffffff;
+ --card-bg-elevated: #f0f2f5;
+ --border-color: #e2e4ea;
+ --border-glow: rgba(0, 212, 255, 0.1);
+ --text-main: #0f0f1a;
+ --text-muted: #6b7280;
+ --text-dim: #9ca3af;
+ --input-bg: #f1f3f5;
+ --bg-gradient-start: #ffffff;
+ --glass-bg: rgba(255, 255, 255, 0.8);
+ --glass-border: rgba(0, 0, 0, 0.05);
+ }
+ * { margin: 0; padding: 0; box-sizing: border-box; }
+ body {
+ background-color: var(--bg-main);
+ color: var(--text-main); 
+ font-family: 'Inter', sans-serif;
+ min-height: 100vh; 
+ display: flex; 
+ flex-direction: column;
+ align-items: center;
+ overflow-x: hidden;
+ background-image: 
+ radial-gradient(circle at 20% 50%, rgba(123, 44, 191, 0.08) 0%, transparent 50%),
+ radial-gradient(circle at 80% 80%, rgba(0, 212, 255, 0.06) 0%, transparent 50%),
+ radial-gradient(circle at 50% 0%, var(--bg-gradient-start) 0%, var(--bg-main) 60%);
+ transition: background-color 0.5s ease, color 0.5s ease;
+ }
+ .ambient-bg {
+ position: fixed;
+ top: 0; left: 0; width: 100%; height: 100%;
+ pointer-events: none;
+ z-index: 0;
+ overflow: hidden;
+ }
+ .ambient-particle {
+ position: absolute;
+ border-radius: 50%;
+ background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+ opacity: 0.03;
+ animation: floatParticle 20s ease-in-out infinite;
+ }
+ @keyframes floatParticle {
+ 0%, 100% { transform: translate(0, 0) scale(1); }
+ 33% { transform: translate(30px, -50px) scale(1.1); }
+ 66% { transform: translate(-20px, 30px) scale(0.9); }
+ }
+ .theme-toggle-btn {
+ position: fixed; top: 24px; left: 24px; z-index: 998;
+ width: 48px; height: 48px; border-radius: 14px;
+ background: var(--glass-bg);
+ backdrop-filter: blur(20px);
+ -webkit-backdrop-filter: blur(20px);
+ border: 1px solid var(--glass-border);
+ color: var(--text-main); font-size: 1.2rem;
+ display: flex; justify-content: center; align-items: center;
+ cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+ box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+ }
+ .theme-toggle-btn:hover { 
+ transform: scale(1.08) rotate(15deg); 
+ border-color: var(--primary); 
+ color: var(--primary);
+ box-shadow: 0 0 20px var(--border-glow);
+ }
+ .toast-container { 
+ position: fixed; top: 24px; right: 24px; z-index: 999; 
+ display: flex; flex-direction: column; gap: 12px; 
+ }
+ .toast {
+ background: var(--glass-bg);
+ backdrop-filter: blur(20px);
+ -webkit-backdrop-filter: blur(20px);
+ border: 1px solid var(--glass-border);
+ border-left: 4px solid var(--primary);
+ border-radius: 14px; padding: 16px 22px;
+ font-family: 'Poppins', sans-serif; font-size: 0.9rem; font-weight: 600;
+ color: var(--text-main); 
+ box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+ transform: translateX(130%); 
+ transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+ display: flex; align-items: center; gap: 12px;
+ max-width: 320px;
+ }
+ .toast.show { transform: translateX(0); }
+ .toast.success { border-left-color: var(--success); }
+ .toast.error { border-left-color: var(--error); }
+ #splash-screen {
+ position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+ background: var(--bg-main); z-index: 1000;
+ display: flex; flex-direction: column; justify-content: center; align-items: center;
+ opacity: 1; transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+ }
+ #splash-screen.fade-out { opacity: 0; pointer-events: none; }
+ .wave-container {
+ display: flex; align-items: center; justify-content: center; 
+ gap: 8px; height: 100px; margin-bottom: 30px;
+ }
+ .wave-bar {
+ width: 6px; 
+ background: linear-gradient(to top, var(--secondary), var(--primary), var(--accent)); 
+ border-radius: 12px; 
+ animation: waveAnim 1.2s ease-in-out infinite;
+ box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+ }
+ .wave-bar:nth-child(1) { animation-delay: 0s; height: 30px; }
+ .wave-bar:nth-child(2) { animation-delay: 0.15s; height: 50px; }
+ .wave-bar:nth-child(3) { animation-delay: 0.3s; height: 90px; }
+ .wave-bar:nth-child(4) { animation-delay: 0.45s; height: 50px; }
+ .wave-bar:nth-child(5) { animation-delay: 0.6s; height: 30px; }
+ @keyframes waveAnim {
+ 0%, 100% { transform: scaleY(1); opacity: 0.7; }
+ 50% { transform: scaleY(1.6); opacity: 1; }
+ }
+ .splash-text {
+ font-family: 'Poppins', sans-serif; font-size: 3rem; font-weight: 900;
+ letter-spacing: 8px; text-transform: uppercase;
+ opacity: 0; transform: translateY(30px);
+ animation: slideUpFade 0.8s ease forwards 0.4s;
+ background: linear-gradient(135deg, var(--text-main), var(--primary), var(--secondary));
+ -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+ background-clip: text;
+ }
+ .splash-sub {
+ font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 600;
+ letter-spacing: 6px; text-transform: uppercase;
+ color: var(--text-muted); margin-top: 12px;
+ opacity: 0; animation: slideUpFade 0.8s ease forwards 0.7s;
+ }
+ @keyframes slideUpFade { to { opacity: 1; transform: translateY(0); } }
+ .brand-header { 
+ margin-top: 90px; margin-bottom: 40px; text-align: center; 
+ position: relative; z-index: 1;
+ }
+ .brand-header h1 {
+ font-family: 'Poppins', sans-serif; font-size: 2.8rem; font-weight: 900;
+ letter-spacing: -2px; color: var(--text-main); 
+ transition: 0.4s;
+ position: relative;
+ display: inline-block;
+ }
+ .brand-header h1::after {
+ content: '';
+ position: absolute;
+ bottom: -8px; left: 50%; transform: translateX(-50%);
+ width: 60px; height: 4px;
+ background: linear-gradient(90deg, var(--primary), var(--secondary));
+ border-radius: 2px;
+ }
+ .brand-header h1 span { 
+ background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+ -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+ background-clip: text;
+ }
+ .brand-header p { 
+ font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 700; 
+ color: var(--text-muted); margin-top: 20px; 
+ letter-spacing: 6px; text-transform: uppercase;
+ }
+ .pro-card {
+ background: var(--card-bg);
+ border: 1px solid var(--border-color);
+ border-radius: 28px; padding: 44px; width: 92%; max-width: 520px;
+ box-shadow: 
+ 0 25px 50px -12px rgba(0, 0, 0, 0.25),
+ 0 0 0 1px var(--glass-border);
+ margin-bottom: 30px; position: relative; z-index: 1;
+ transition: all 0.4s ease;
+ text-align: center;
+ }
+ .pro-card:hover {
+ box-shadow: 
+ 0 30px 60px -12px rgba(0, 0, 0, 0.3),
+ 0 0 0 1px var(--border-glow),
+ 0 0 40px var(--border-glow);
+ transform: translateY(-2px);
+ }
+ .card-title {
+ font-family: 'Poppins', sans-serif; font-size: 1.3rem; font-weight: 700;
+ color: var(--text-main); margin-bottom: 32px;
+ display: flex; align-items: center; justify-content: center; gap: 14px;
+ }
+ .card-title i { 
+ font-size: 1.6rem; 
+ background: linear-gradient(135deg, var(--primary), var(--secondary));
+ -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+ background-clip: text;
+ }
+ .upload-area {
+ border: 2px dashed var(--border-color); 
+ border-radius: 24px; padding: 55px 24px; 
+ background: var(--input-bg); 
+ cursor: pointer; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+ margin-bottom: 28px;
+ display: flex; flex-direction: column; align-items: center; justify-content: center;
+ position: relative;
+ overflow: hidden;
+ }
+ .upload-area::before {
+ content: '';
+ position: absolute;
+ top: 0; left: 0; right: 0; bottom: 0;
+ background: linear-gradient(135deg, rgba(0, 212, 255, 0.03), rgba(123, 44, 191, 0.03));
+ opacity: 0;
+ transition: opacity 0.4s ease;
+ }
+ .upload-area:hover { 
+ border-color: var(--primary); 
+ transform: translateY(-2px);
+ box-shadow: 0 10px 30px rgba(0, 212, 255, 0.08);
+ }
+ .upload-area:hover::before { opacity: 1; }
+ .upload-area i { 
+ font-size: 3.5rem; 
+ color: var(--primary); 
+ margin-bottom: 18px; 
+ transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+ position: relative; z-index: 1;
+ }
+ .upload-area:hover i { 
+ transform: scale(1.15) translateY(-4px); 
+ filter: drop-shadow(0 0 15px rgba(0, 212, 255, 0.4));
+ }
+ .upload-area h3 { 
+ font-family: 'Poppins', sans-serif; font-size: 1.15rem; 
+ color: var(--text-main); margin-bottom: 6px; 
+ word-break: break-all; position: relative; z-index: 1;
+ font-weight: 600;
+ }
+ .upload-area p { 
+ font-family: 'Inter', sans-serif; font-size: 0.85rem; 
+ color: var(--text-muted); font-weight: 500;
+ position: relative; z-index: 1;
+ }
+ .btn-core {
+ width: 100%; padding: 18px; border: none; border-radius: 18px;
+ background: linear-gradient(135deg, var(--primary), var(--secondary)); 
+ color: #fff; font-size: 1.05rem; font-weight: 700;
+ font-family: 'Poppins', sans-serif; cursor: pointer; 
+ transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+ display: flex; justify-content: center; align-items: center; 
+ gap: 12px; text-transform: uppercase; letter-spacing: 2px;
+ position: relative;
+ overflow: hidden;
+ }
+ .btn-core::before {
+ content: '';
+ position: absolute;
+ top: 0; left: -100%; width: 100%; height: 100%;
+ background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+ transition: left 0.5s ease;
+ }
+ .btn-core:hover:not(:disabled) { 
+ transform: translateY(-3px); 
+ box-shadow: 0 12px 30px rgba(0, 212, 255, 0.25);
+ }
+ .btn-core:hover:not(:disabled)::before {
+ left: 100%;
+ }
+ .btn-core:active:not(:disabled) {
+ transform: translateY(-1px);
+ }
+ .btn-core:disabled { 
+ opacity: 0.4; cursor: not-allowed; 
+ filter: grayscale(100%) brightness(0.7);
+ }
+ .btn-secondary {
+ background: var(--card-bg-elevated); 
+ border: 1.5px solid var(--border-color); 
+ color: var(--text-main);
+ margin-top: 16px; text-decoration: none;
+ background-clip: padding-box;
+ }
+ .btn-secondary:hover { 
+ background: var(--border-color); 
+ box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); 
+ color: var(--text-main);
+ border-color: var(--text-muted);
+ }
+ .btn-download { 
+ background: linear-gradient(135deg, var(--success), #00b894); 
+ display: none; margin-top: 24px;
+ box-shadow: 0 8px 25px rgba(0, 245, 212, 0.2);
+ }
+ .btn-download:hover {
+ box-shadow: 0 12px 35px rgba(0, 245, 212, 0.3);
+ }
+ .scanner-box {
+ display: none; margin-top: 24px; text-align: center;
+ border: 1.5px solid var(--border-color); 
+ padding: 36px 28px; border-radius: 20px;
+ background: var(--input-bg); 
+ position: relative; overflow: hidden; 
+ transition: all 0.4s ease;
+ }
+ .scanner-box::before {
+ content: '';
+ position: absolute;
+ top: 0; left: 0; right: 0; height: 2px;
+ background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+ animation: scanLine 2s linear infinite;
+ }
+ @keyframes scanLine {
+ 0% { transform: translateX(-100%); }
+ 100% { transform: translateX(100%); }
+ }
+ .loader {
+ width: 50px; height: 50px; 
+ border: 3px solid var(--border-color);
+ border-top-color: var(--primary); 
+ border-right-color: var(--secondary);
+ border-radius: 50%;
+ animation: spin 0.8s linear infinite; 
+ margin: 0 auto 18px auto;
+ }
+ @keyframes spin { to { transform: rotate(360deg); } }
+ .scan-status-text { 
+ font-family: 'Poppins', sans-serif; 
+ font-size: 1.05rem; color: var(--text-main); 
+ font-weight: 600; letter-spacing: 0.5px;
+ }
+ .scan-sub-text { 
+ font-size: 0.8rem; color: var(--text-muted); 
+ margin-top: 8px; font-weight: 500;
+ }
+ .whatsapp-float {
+ position: fixed;
+ width: 58px; height: 58px;
+ bottom: 28px; right: 28px;
+ background: linear-gradient(135deg, #25d366, #128c7e); 
+ color: #FFF;
+ border-radius: 50%; text-align: center;
+ font-size: 32px; z-index: 1000;
+ display: flex; align-items: center; justify-content: center;
+ text-decoration: none;
+ box-shadow: 0 8px 25px rgba(37, 211, 102, 0.35);
+ animation: pulse-wa 2.5s infinite;
+ transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+ }
+ .whatsapp-float:hover { 
+ transform: scale(1.12) rotate(-5deg); 
+ animation: none; 
+ box-shadow: 0 12px 35px rgba(37, 211, 102, 0.45);
+ }
+ @keyframes pulse-wa {
+ 0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5); }
+ 70% { box-shadow: 0 0 0 18px rgba(37, 211, 102, 0); }
+ 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+ }
+ footer { 
+ margin-top: auto; margin-bottom: 40px; 
+ font-family: 'Inter', sans-serif; 
+ font-size: 0.85rem; font-weight: 500; 
+ color: var(--text-dim); text-align: center;
+ position: relative; z-index: 1;
+ letter-spacing: 1px;
+ }
+ footer b { 
+ color: var(--text-muted); font-weight: 700; 
+ letter-spacing: 2px;
+ }
+ footer .heart {
+ color: var(--accent);
+ animation: heartbeat 1.5s ease-in-out infinite;
+ display: inline-block;
+ }
+ @keyframes heartbeat {
+ 0%, 100% { transform: scale(1); }
+ 50% { transform: scale(1.15); }
+ }
+ .file-badge {
+ display: inline-flex;
+ align-items: center;
+ gap: 8px;
+ background: var(--card-bg-elevated);
+ border: 1px solid var(--border-color);
+ padding: 8px 16px;
+ border-radius: 12px;
+ font-size: 0.8rem;
+ font-weight: 600;
+ color: var(--text-muted);
+ margin-bottom: 16px;
+ opacity: 0;
+ transform: translateY(-10px);
+ transition: all 0.3s ease;
+ }
+ .file-badge.show {
+ opacity: 1;
+ transform: translateY(0);
+ }
+ .file-badge i {
+ color: var(--primary);
+ }
+ .progress-ring-container {
+ display: none;
+ margin: 20px auto;
+ position: relative;
+ width: 80px; height: 80px;
+ }
+ .progress-ring {
+ transform: rotate(-90deg);
+ }
+ .progress-ring-circle {
+ transition: stroke-dashoffset 0.35s;
+ transform-origin: 50% 50%;
+ }
+ .progress-text {
+ position: absolute;
+ top: 50%; left: 50%;
+ transform: translate(-50%, -50%);
+ font-family: 'Poppins', sans-serif;
+ font-size: 0.9rem;
+ font-weight: 700;
+ color: var(--primary);
+ }
+ @media (max-width: 480px) {
+ .brand-header h1 { font-size: 2.2rem; }
+ .pro-card { padding: 28px; width: 95%; }
+ .splash-text { font-size: 2.2rem; letter-spacing: 4px; }
+ }
+ </style><script>(function(){var n=function(){};['log','warn','error','info','debug','dir','trace','table','group','groupEnd','time','timeEnd','assert','count','clear'].forEach(function(k){try{window.console[k]=n;}catch(e){}});})();</script></head><body><div class="ambient-bg" id="ambientBg"></div><button class="theme-toggle-btn" id="themeToggle" onclick="toggleTheme()" title="Toggle Light/Dark Mode"><i class="fa-solid fa-moon" id="themeIcon"></i></button><div class="toast-container" id="toastBox"></div><div id="splash-screen"><div class="wave-container"><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div></div><h1 class="splash-text">SOURAJITVFX HACKS</h1><p class="splash-sub">Video To Audio Converter</p></div><div class="brand-header"><h1>SOURAJITVFX <span>VTOA</span></h1><p>PREMIUM CONVERTER</p></div><div class="pro-card"><div class="card-title"><i class="fa-solid fa-wave-square"></i>
+ Video to Audio Converter
+ </div><input type="file" id="videoInput" accept="video/*" style="display: none;"><div class="upload-area" id="uploadArea" onclick="document.getElementById('videoInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i><h3 id="fileStatus">CHOOSE VIDEO FILE</h3><p id="fileDetail">Drag & drop or tap to upload your media</p></div><div class="file-badge" id="fileBadge"><i class="fa-solid fa-file-video"></i><span id="fileBadgeText"></span></div><button class="btn-core" id="convertBtn" disabled onclick="processVideo()"><i class="fa-solid fa-bolt"></i> Convert to Audio
+ </button><div class="scanner-box" id="scanner"><div class="loader"></div><p class="scan-status-text">Extracting Audio...</p><p class="scan-sub-text">Processing locally on your device. Please wait.</p></div><div id="result-area" style="display: none;"><a href="#" class="btn-core btn-download" id="downloadBtn" download="SOURAJITVFX_AUDIO.wav"><i class="fa-solid fa-download"></i> Download WAV Audio
+ </a><button class="btn-core btn-secondary" onclick="resetUI()"><i class="fa-solid fa-rotate-right"></i> Convert Another
+ </button></div></div><footer>
+ Crafted with <span class="heart"><i class="fa-solid fa-heart"></i></span> by <b>SOURAJITVFX</b></footer><a href="https://whatsapp.com/channel/0029VbAVaylCnA7pF6IP0R46" class="whatsapp-float" target="_blank" title="Join SOURAJITVFX WhatsApp Channel"><i class="fa-brands fa-whatsapp"></i></a><script>
+ // --- Ambient Background Particles ---
+ function createAmbientParticles() {
+ const container = document.getElementById('ambientBg');
+ const particleCount = 6;
+ for (let i = 0; i < particleCount; i++) {
+ const particle = document.createElement('div');
+ particle.className = 'ambient-particle';
+ const size = Math.random() * 300 + 200;
+ particle.style.width = size + 'px';
+ particle.style.height = size + 'px';
+ particle.style.left = Math.random() * 100 + '%';
+ particle.style.top = Math.random() * 100 + '%';
+ particle.style.animationDelay = Math.random() * 10 + 's';
+ particle.style.animationDuration = (Math.random() * 15 + 15) + 's';
+ container.appendChild(particle);
+ }
+ }
+ createAmbientParticles();
+ // --- Theme Management ---
+ function toggleTheme() {
+ const body = document.body;
+ const icon = document.getElementById('themeIcon');
+ body.classList.toggle('light-theme');
+ if(body.classList.contains('light-theme')) {
+ icon.classList.remove('fa-moon');
+ icon.classList.add('fa-sun');
+ localStorage.setItem('SOURAJITVFX_audio_theme', 'light');
+ } else {
+ icon.classList.remove('fa-sun');
+ icon.classList.add('fa-moon');
+ localStorage.setItem('SOURAJITVFX_audio_theme', 'dark');
+ }
+ }
+ function loadTheme() {
+ const savedTheme = localStorage.getItem('SOURAJITVFX_audio_theme');
+ const icon = document.getElementById('themeIcon');
+ if (savedTheme === 'light') {
+ document.body.classList.add('light-theme');
+ icon.classList.remove('fa-moon');
+ icon.classList.add('fa-sun');
+ }
+ }
+ loadTheme();
+ // --- Core Functions ---
+ function showToast(msg, type = 'success') {
+ const toastBox = document.getElementById('toastBox');
+ const toast = document.createElement('div');
+ toast.className = `toast ${type} show`;
+ const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
+ const color = type === 'success' ? 'var(--success)' : 'var(--error)';
+ toast.innerHTML = `<i class="fa-solid ${icon}" style="color:${color}; font-size: 1.1rem;"></i> ${msg}`;
+ toastBox.appendChild(toast);
+ setTimeout(() => { 
+ toast.classList.remove('show'); 
+ setTimeout(() => toast.remove(), 500); 
+ }, 3500);
+ }
+ window.addEventListener('load', () => {
+ setTimeout(() => {
+ document.getElementById('splash-screen').classList.add('fade-out');
+ }, 2800); 
+ });
+ const videoInput = document.getElementById('videoInput');
+ const convertBtn = document.getElementById('convertBtn');
+ const downloadBtn = document.getElementById('downloadBtn');
+ const fileStatus = document.getElementById('fileStatus');
+ const fileDetail = document.getElementById('fileDetail');
+ const scanner = document.getElementById('scanner');
+ const resultArea = document.getElementById('result-area');
+ const uploadArea = document.getElementById('uploadArea');
+ const fileBadge = document.getElementById('fileBadge');
+ const fileBadgeText = document.getElementById('fileBadgeText');
+ // Drag and drop support
+ uploadArea.addEventListener('dragover', (e) => {
+ e.preventDefault();
+ uploadArea.style.borderColor = 'var(--primary)';
+ uploadArea.style.background = 'rgba(0, 212, 255, 0.05)';
+ });
+ uploadArea.addEventListener('dragleave', (e) => {
+ e.preventDefault();
+ uploadArea.style.borderColor = 'var(--border-color)';
+ uploadArea.style.background = 'var(--input-bg)';
+ });
+ uploadArea.addEventListener('drop', (e) => {
+ e.preventDefault();
+ uploadArea.style.borderColor = 'var(--border-color)';
+ uploadArea.style.background = 'var(--input-bg)';
+ const files = e.dataTransfer.files;
+ if (files.length > 0 && files[0].type.startsWith('video/')) {
+ videoInput.files = files;
+ handleFileSelect(files[0]);
+ } else {
+ showToast('Please drop a valid video file', 'error');
+ }
+ });
+ function handleFileSelect(file) {
+ const fileName = file.name;
+ fileStatus.textContent = fileName.length > 25 ? fileName.substring(0, 22) + "..." : fileName;
+ fileDetail.textContent = formatFileSize(file.size) + " • Ready to convert";
+ uploadArea.style.borderColor = "var(--primary)";
+ fileBadgeText.textContent = fileName;
+ fileBadge.classList.add('show');
+ convertBtn.disabled = false;
+ showToast("File loaded successfully!", "success");
+ }
+ function formatFileSize(bytes) {
+ if (bytes === 0) return '0 Bytes';
+ const k = 1024;
+ const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+ const i = Math.floor(Math.log(bytes) / Math.log(k));
+ return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+ }
+ videoInput.addEventListener('change', function(e) {
+ if (e.target.files[0]) {
+ handleFileSelect(e.target.files[0]);
+ }
+ });
+ async function processVideo() {
+ const file = videoInput.files[0];
+ if (!file) return;
+ uploadArea.style.display = 'none';
+ fileBadge.style.display = 'none';
+ convertBtn.style.display = 'none';
+ scanner.style.display = 'block';
+ try {
+ const arrayBuffer = await file.arrayBuffer();
+ const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+ const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+ const wavBlob = bufferToWave(audioBuffer, audioBuffer.length);
+ const url = URL.createObjectURL(wavBlob);
+ let originalName = file.name.replace(/\.[^/.]+$/, "");
+ downloadBtn.href = url;
+ downloadBtn.download = `${originalName}_SOURAJITVFX.wav`;
+ scanner.style.display = 'none';
+ resultArea.style.display = 'block';
+ downloadBtn.style.display = 'flex';
+ showToast("Audio Extracted Successfully!", "success");
+ } catch (e) {
+ console.error(e);
+ scanner.style.display = 'none';
+ uploadArea.style.display = 'flex';
+ fileBadge.style.display = 'inline-flex';
+ convertBtn.style.display = 'flex';
+ showToast("Error: Unsupported Format or Corrupt File", "error");
+ }
+ }
+ function resetUI() {
+ videoInput.value = '';
+ fileStatus.textContent = "CHOOSE VIDEO FILE";
+ fileDetail.textContent = "Drag & drop or tap to upload your media";
+ uploadArea.style.borderColor = "var(--border-color)";
+ fileBadge.classList.remove('show');
+ setTimeout(() => { fileBadge.style.display = 'none'; }, 300);
+ resultArea.style.display = 'none';
+ downloadBtn.style.display = 'none';
+ uploadArea.style.display = 'flex';
+ convertBtn.style.display = 'flex';
+ convertBtn.disabled = true;
+ }
+ // WAV Encoding Function
+ function bufferToWave(abuffer, len) {
+ let numOfChan = abuffer.numberOfChannels,
+ length = len * numOfChan * 2 + 44,
+ buffer = new ArrayBuffer(length),
+ view = new DataView(buffer),
+ channels = [], i, sample, offset = 0, pos = 0;
+ function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
+ function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
+ setUint32(0x46464952); setUint32(length - 8); setUint32(0x45564157);
+ setUint32(0x20746d66); setUint32(16); setUint16(1); setUint16(numOfChan);
+ setUint32(abuffer.sampleRate); setUint32(abuffer.sampleRate * 2 * numOfChan);
+ setUint16(numOfChan * 2); setUint16(16); setUint32(0x61746164); setUint32(length - pos - 4);
+ for(i = 0; i < abuffer.numberOfChannels; i++) channels.push(abuffer.getChannelData(i));
+ while(pos < length) {
+ for(i = 0; i < numOfChan; i++) {
+ sample = Math.max(-1, Math.min(1, channels[i][offset]));
+ sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767)|0;
+ view.setInt16(pos, sample, true); pos += 2;
+ }
+ offset++;
+ }
+ return new Blob([buffer], {type: "audio/wav"});
+ }
+ </script><script>document.addEventListener('contextmenu',function(e){e.preventDefault();return false;});</script><script>(function(){
+if(window.self!==window.top)return;
+var _b=false;
+function _chk(){
+  var _dw=window.outerWidth-window.innerWidth;
+  var _dh=window.outerHeight-window.innerHeight;
+  if(_dw>200||_dh>200){
+    if(!_b){_b=true;
+      document.body.style.cssText='margin:0;display:flex;align-items:center;justify-content:center;height:100vh;background:#050A15;';
+      document.body.innerHTML='<div style="text-align:center;color:#FF3B30;font-family:monospace;"><i class="fa-solid fa-ban" style="font-size:64px;margin-bottom:16px;filter:drop-shadow(0 0 15px rgba(255,59,48,0.5));"></i><div style="font-size:22px;letter-spacing:3px;font-weight:bold;">DEVTOOLS BLOCKED</div></div>';
+    }
+  }else{_b=false;}
+}
+setInterval(_chk,1000);
+})();</script></body></html>

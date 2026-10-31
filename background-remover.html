@@ -1,0 +1,233 @@
+<!DOCTYPE html><html lang="en" data-uh="1467643141"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>AI SOURAJITVFX BG Remover</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><style>
+ * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+ body {
+ background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+ color: #f0f0f0;
+ min-height: 100vh;
+ padding: 20px;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ }
+ .container {
+ width: 100%;
+ max-width: 500px;
+ background-color: rgba(255, 255, 255, 0.08);
+ backdrop-filter: blur(10px);
+ border-radius: 24px;
+ padding: 25px;
+ box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+ border: 1px solid rgba(255, 255, 255, 0.1);
+ margin-top: 20px;
+ }
+ .header h1 {
+ text-align: center;
+ font-family: 'Righteous', cursive;
+ font-size: 32px;
+ background: linear-gradient(to right, #6dd5ed, #2193b0);
+ -webkit-background-clip: text;
+ background-clip: text;
+ color: transparent;
+ margin-bottom: 20px;
+ }
+ .image-container {
+ position: relative;
+ width: 100%;
+ height: 300px;
+ border-radius: 16px;
+ overflow: hidden;
+ background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect fill='%23222d42' x='0' y='0' width='50' height='50'/%3E%3Crect fill='%2328354c' x='50' y='0' width='50' height='50'/%3E%3Crect fill='%2328354c' x='0' y='50' width='50' height='50'/%3E%3Crect fill='%23222d42' x='50' y='50' width='50' height='50'/%3E%3C/svg%3E") repeat;
+ background-size: 20px 20px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ border: 1px solid rgba(255, 255, 255, 0.1);
+ }
+ #previewDisplay, #outputImage {
+ max-width: 100%;
+ max-height: 100%;
+ object-fit: contain;
+ }
+ .laser {
+ position: absolute;
+ top: 0;
+ left: 0;
+ width: 100%;
+ height: 4px;
+ background: #6dd5ed;
+ box-shadow: 0 0 15px 2px #6dd5ed;
+ z-index: 10;
+ display: none;
+ animation: scanning 2s linear infinite;
+ }
+ @keyframes scanning {
+ 0% { top: 0; }
+ 50% { top: 100%; }
+ 100% { top: 0; }
+ }
+ .reveal-down {
+ animation: reveal 1.2s ease-out forwards;
+ }
+ @keyframes reveal {
+ 0% { clip-path: inset(0 0 100% 0); transform: translateY(-10px); }
+ 100% { clip-path: inset(0 0 0 0); transform: translateY(0); }
+ }
+ .upload-section {
+ background: rgba(0, 0, 0, 0.2);
+ border-radius: 18px;
+ padding: 20px;
+ margin-bottom: 20px;
+ border: 2px dashed rgba(109, 213, 237, 0.4);
+ text-align: center;
+ }
+ .btn {
+ border: none; padding: 14px; border-radius: 12px;
+ font-weight: 600; cursor: pointer; transition: 0.3s;
+ display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+ width: 100%; color: white; margin-top: 10px;
+ }
+ .process-btn { background: linear-gradient(to right, #8a2387, #f27121); }
+ .download-btn { background: linear-gradient(to right, #11998e, #38ef7d); display: none; text-decoration: none; }
+ .footer-tools {
+ margin-top: 25px;
+ padding-top: 15px;
+ border-top: 1px solid rgba(255,255,255,0.1);
+ text-align: center;
+ }
+ .small-tool-btn {
+ background: rgba(255,255,255,0.1);
+ border: 1px solid #6dd5ed;
+ padding: 8px 15px;
+ border-radius: 20px;
+ color: #6dd5ed;
+ text-decoration: none;
+ font-size: 13px;
+ transition: 0.3s;
+ }
+ .small-tool-btn:hover { background: #6dd5ed; color: #1a1a2e; }
+ .modal-overlay {
+ position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+ background: rgba(0, 0, 0, 0.8); display: none;
+ align-items: center; justify-content: center; z-index: 1000;
+ }
+ .modal-content {
+ background: #16213e; padding: 30px; border-radius: 20px; text-align: center;
+ max-width: 320px; border: 1px solid #38ef7d;
+ }
+ </style><script>(function(){var n=function(){};['log','warn','error','info','debug','dir','trace','table','group','groupEnd','time','timeEnd','assert','count','clear'].forEach(function(k){try{window.console[k]=n;}catch(e){}});})();</script><script>if(window.top!==window.self){window.top.location.replace(location.href);}</script><script>(function(){
+try{Object.defineProperty(document.documentElement,'outerHTML',{get:function(){return '<!-- PROTECTED BY SOURAJITVFX BOSS -->';}});}catch(e){}
+try{Object.defineProperty(document.documentElement,'innerHTML',{get:function(){return '';}});}catch(e){}
+try{
+  var _oc=console.log.bind(console);
+  Object.defineProperty(document,'documentElement',{get:function(){
+    var _el=document.querySelector('html');
+    return new Proxy(_el,{get:function(t,p){
+      if(p==='outerHTML'||p==='innerHTML')return '<!-- SOURCE PROTECTED -->';
+      var v=t[p];return typeof v==='function'?v.bind(t):v;
+    }});
+  }});
+}catch(e){}
+})();</script></head><body><div class="container"><div class="header"><h1><i class="fas fa-bolt"></i> SOURAJITVFX BG Remover</h1></div><div class="image-container" id="mainStage"><div class="laser" id="laserLine"></div><p id="placeholderText" style="color: #666;">No image selected</p><img id="previewDisplay" src="" style="display:none;"><img id="outputImage" src="" style="display:none;"></div><div class="upload-section" id="uploadBox"><label for="fileInput" class="btn" style="background: #2193b0;"><i class="fas fa-image"></i> Select Image
+ </label><input type="file" id="fileInput" style="display:none;" accept="image/*" onchange="loadPreview(this)"></div><button onclick="removeBackground()" id="actionBtn" class="btn process-btn"><i class="fas fa-wand-magic-sparkles"></i> Remove Background
+ </button><a id="downloadBtn" class="btn download-btn" download="BG Removed by SOURAJITVFX.png" onclick="showSuccessModal(event)"><i class="fas fa-download"></i> Download PNG
+ </a><div class="footer-tools"><a href="https://SOURAJITVFXtools.pages.dev" target="_blank" class="small-tool-btn"><i class="fas fa-th-large"></i> Visit All Tools
+ </a></div></div><div class="modal-overlay" id="successModal"><div class="modal-content"><div style="width:60px; height:60px; background:#38ef7d; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; margin-bottom:15px; color:#1a1a2e;"><i class="fas fa-check fa-2x"></i></div><h3>PNG Saved!</h3><p style="color:#aaa; font-size:14px; margin: 10px 0 20px;">Saved as "BG Removed by SOURAJITVFX"</p><button onclick="location.reload()" class="btn" style="background:#4c51bf;">Process Another</button></div></div><script>
+ function loadPreview(input) {
+ const file = input.files[0];
+ if (file) {
+ const reader = new FileReader();
+ reader.onload = function(e) {
+ const preview = document.getElementById('previewDisplay');
+ preview.src = e.target.result;
+ preview.style.display = 'block';
+ document.getElementById('placeholderText').style.display = 'none';
+ document.getElementById('outputImage').style.display = 'none';
+ }
+ reader.readAsDataURL(file);
+ }
+ }
+ async function removeBackground() {
+ const fileInput = document.getElementById('fileInput');
+ const imageFile = fileInput.files[0];
+ const laser = document.getElementById('laserLine');
+ const preview = document.getElementById('previewDisplay');
+ const output = document.getElementById('outputImage');
+ const actionBtn = document.getElementById('actionBtn');
+ const downloadBtn = document.getElementById('downloadBtn');
+ if (!imageFile) {
+ alert("Please select an image first!");
+ return;
+ }
+ // Start Scanning Animation
+ actionBtn.disabled = true;
+ actionBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+ laser.style.display = 'block';
+ output.style.display = 'none';
+ preview.style.opacity = '0.5';
+ const apiKey = 'YOUR_REMOVE_BG_API_KEY';
+ const formData = new FormData();
+ formData.append('image_file', imageFile);
+ formData.append('size', 'auto');
+ try {
+ // Using a proxy fallback as previously established
+ const response = await fetch('https://api.remove.bg/v1.0/removebg', {
+ method: 'POST',
+ headers: { 'X-Api-Key': apiKey },
+ body: formData
+ });
+ if (response.ok) {
+ const blob = await response.blob();
+ const url = URL.createObjectURL(blob);
+ // Stop laser and show result with reveal animation
+ laser.style.display = 'none';
+ preview.style.display = 'none';
+ output.src = url;
+ output.style.display = 'block';
+ output.classList.add('reveal-down');
+ downloadBtn.href = url;
+ downloadBtn.style.display = 'inline-flex';
+ actionBtn.style.display = 'none';
+ document.getElementById('uploadBox').style.display = 'none';
+ } else {
+ alert("Error processing image. Check API key or connection.");
+ laser.style.display = 'none';
+ preview.style.opacity = '1';
+ }
+ } catch (error) {
+ alert("Request failed. If CORS error occurs, enable proxy at cors-anywhere.herokuapp.com/corsdemo");
+ laser.style.display = 'none';
+ } finally {
+ actionBtn.disabled = false;
+ actionBtn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Remove Background';
+ }
+ }
+ function showSuccessModal(e) {
+ document.getElementById('successModal').style.display = 'flex';
+ }
+ </script><script>document.addEventListener('contextmenu',function(e){e.preventDefault();return false;});</script><script>['copy','cut','selectstart','dragstart'].forEach(function(ev){document.addEventListener(ev,function(e){e.preventDefault();});});</script><style>*{-webkit-user-select:none!important;user-select:none!important;}</style><script>document.addEventListener('keydown',function(e){var b=[123];if(e.ctrlKey&&e.shiftKey)b.push(73,74,67);if(e.ctrlKey)b.push(85,83,65,80,86);if(b.indexOf(e.keyCode)>-1){e.preventDefault();return false;}});</script><script>(function(){
+if(window.self!==window.top)return;
+var _b=false;
+function _chk(){
+  var _dw=window.outerWidth-window.innerWidth;
+  var _dh=window.outerHeight-window.innerHeight;
+  if(_dw>200||_dh>200){
+    if(!_b){_b=true;
+      document.body.style.cssText='margin:0;display:flex;align-items:center;justify-content:center;height:100vh;background:#050A15;';
+      document.body.innerHTML='<div style="text-align:center;color:#FF3B30;font-family:monospace;"><i class="fa-solid fa-ban" style="font-size:64px;margin-bottom:16px;filter:drop-shadow(0 0 15px rgba(255,59,48,0.5));"></i><div style="font-size:22px;letter-spacing:3px;font-weight:bold;">DEVTOOLS BLOCKED</div></div>';
+    }
+  }else{_b=false;}
+}
+setInterval(_chk,1000);
+})();</script><script>(function(){
+if(window.self!==window.top)return;
+var _h=1467643141;
+window.addEventListener('load',function(){
+  setTimeout(function(){
+    var _el=document.documentElement;
+    var _stored=_el&&_el.getAttribute('data-uh');
+    if(!_stored||parseInt(_stored,10)!==_h){
+      document.open();document.write('<html><head><meta charset="UTF-8"><style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#050A15;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:monospace;}</style><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></head><body><div style="text-align:center;padding:40px;"><i class="fa-solid fa-triangle-exclamation" style="font-size:72px;color:#FF3B30;margin-bottom:20px;animation:sp 0.5s ease-in-out infinite alternate;filter:drop-shadow(0 0 20px rgba(255,59,48,0.5));"></i><div style="font-size:24px;font-weight:800;letter-spacing:3px;color:#fff;margin-bottom:10px;">TAMPER DETECTED</div><div style="font-size:14px;color:#94A3B8;letter-spacing:2px;">This file has been modified</div></div><style>@keyframes sp{from{transform:scale(1);}to{transform:scale(1.1);}}</style></body></html>');document.close();
+    }
+  },800);
+});
+})();</script></body></html>

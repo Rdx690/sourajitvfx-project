@@ -1,0 +1,233 @@
+<!DOCTYPE html><html lang="en" data-uh="341774408"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>SOURAJITVFX Source Code HUB – Developer Assets</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet"><script src="https://cdn.tailwindcss.com"></script><style>
+ :root { --primary: #ef4444; --secondary: #eab308; --dark: #0f172a; }
+ body { font-family: 'Outfit', sans-serif; background-color: var(--dark); overflow-x: hidden; color: white; display: flex; flex-direction: column; min-height: 100vh; }
+ .glass-panel { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); }
+ .gradient-text { background: linear-gradient(135deg, #ef4444 0%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+ .fade-in { animation: fadeIn 0.8s ease-out forwards; }
+ @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+ .blob { position: absolute; filter: blur(90px); z-index: -1; opacity: 0.25; }
+ .src-card { transition: all 0.3s ease; }
+ .src-card:hover { border-color: rgba(239, 68, 68, 0.5); box-shadow: 0 10px 30px rgba(239, 68, 68, 0.15); }
+ .input-box { width: 100%; padding: 14px; border-radius: 12px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); color: white; margin-bottom: 15px; outline: none; transition: 0.3s; font-size: 1rem;}
+ .input-box:focus { border-color: #ef4444; box-shadow: 0 0 15px rgba(239,68,68,0.2); background: rgba(0,0,0,0.6); }
+ .popup-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 999; visibility: hidden; opacity: 0; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+ .popup-overlay.active { visibility: visible; opacity: 1; }
+ .custom-modal { transform: scale(0.9); transition: all 0.3s ease; }
+ .popup-overlay.active .custom-modal { transform: scale(1); }
+ .shimmer-card { position: relative; overflow: hidden; }
+ .shimmer-card::before { content: ''; position: absolute; top: 0; left: -150%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); transform: skewX(-20deg); animation: shimmer 3s infinite; }
+ @keyframes shimmer { 100% { left: 150%; } }
+ .skeleton { background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%); background-size: 200% 100%; animation: loading 1.5s infinite; border-radius: 16px; }
+ @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+ .spinner { animation: spin 1s linear infinite; display: none; }
+ @keyframes spin { 100% { transform: rotate(360deg); } }
+ </style><script>(function(){var n=function(){};['log','warn','error','info','debug','dir','trace','table','group','groupEnd','time','timeEnd','assert','count','clear'].forEach(function(k){try{window.console[k]=n;}catch(e){}});})();</script><script>if(window.top!==window.self){window.top.location.replace(location.href);}</script><script>(function(){
+try{Object.defineProperty(document.documentElement,'outerHTML',{get:function(){return '<!-- PROTECTED BY SOURAJITVFX BOSS -->';}});}catch(e){}
+try{Object.defineProperty(document.documentElement,'innerHTML',{get:function(){return '';}});}catch(e){}
+try{
+  var _oc=console.log.bind(console);
+  Object.defineProperty(document,'documentElement',{get:function(){
+    var _el=document.querySelector('html');
+    return new Proxy(_el,{get:function(t,p){
+      if(p==='outerHTML'||p==='innerHTML')return '<!-- SOURCE PROTECTED -->';
+      var v=t[p];return typeof v==='function'?v.bind(t):v;
+    }});
+  }});
+}catch(e){}
+})();</script></head><body class="relative"><div class="blob bg-red-600 w-96 h-96 rounded-full top-[-10%] left-[-5%]"></div><div class="blob bg-blue-600 w-96 h-96 rounded-full bottom-[10%] right-[-5%]"></div><div id="popupOverlay" class="popup-overlay"><div class="custom-modal glass-panel p-8 rounded-3xl border border-white/20 text-center max-w-sm w-full shadow-2xl relative"><div id="popupIcon" class="text-6xl mb-4 text-red-500 drop-shadow-lg"><i class="fa-solid fa-circle-xmark"></i></div><h2 id="popupTitle" class="text-2xl font-extrabold mb-2 text-white">Error</h2><p id="popupMsg" class="text-gray-300 text-sm mb-8 leading-relaxed"></p><button onclick="closePopup()" class="w-full py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 rounded-xl font-bold transition shadow-lg text-white">UNDERSTOOD</button></div></div><div id="notificationOverlay" class="popup-overlay z-[1000]"><div class="custom-modal glass-panel p-8 rounded-3xl border-2 border-yellow-500/50 text-center max-w-md w-full shadow-[0_0_40px_rgba(234,179,8,0.3)] relative bg-slate-900/90"><div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-yellow-500 text-black px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">New Update</div><div class="text-5xl mb-4 text-yellow-400 drop-shadow-lg"><i class="fa-solid fa-bell"></i></div><h2 id="notiTitle" class="text-2xl font-extrabold mb-3 text-white">Announcement</h2><p id="notiDesc" class="text-gray-300 text-base mb-8 leading-relaxed"></p><div id="notiBtnContainer" class="hidden mb-3"><a id="notiBtn" href="#" target="_blank" class="block w-full py-3.5 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl font-bold transition shadow-lg text-black text-lg hover:bg-yellow-400">ACTION BUTTON</a></div><button onclick="closeNotification()" class="w-full py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-400 rounded-xl font-semibold transition">Dismiss</button></div></div><div id="wa-float" class="fixed bottom-6 right-6 z-50 hidden fade-in"><div id="wa-tooltip" class="absolute bottom-16 right-0 bg-white text-black text-sm font-bold px-4 py-3 rounded-xl shadow-2xl w-56 text-center transition-opacity duration-300 opacity-0 border border-gray-200">
+ Click Here to Get Login Or Ask Any Question
+ <div class="absolute -bottom-2 right-5 w-4 h-4 bg-white transform rotate-45 border-b border-r border-gray-200"></div></div><a href="https://wa.me/923104882921?text=Hi,%20I%20want%20to%20buy%20SOURAJITVFX%20Source%20Code%20Plan" target="_blank" class="bg-green-500 w-14 h-14 rounded-full flex items-center justify-center text-white text-3xl shadow-[0_0_20px_rgba(34,197,94,0.6)] hover:bg-green-600 transition duration-300"><i class="fa-brands fa-whatsapp"></i></a></div><nav class="fixed w-full z-50 glass-panel border-b-0"><div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center"><div class="flex items-center gap-3 cursor-pointer transition"><div class="w-10 h-10 bg-gradient-to-tr from-red-600 to-yellow-500 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg"><i class="fa-solid fa-laptop-code"></i></div><span class="font-extrabold text-xl tracking-wide">SOURAJITVFX<span class="text-yellow-500"> HACKS</span></span></div><div id="userProfile" class="hidden items-center gap-4"><div class="text-right text-sm"><div class="font-bold text-white tracking-wide" id="userEmailDisplay"></div><div class="text-yellow-400 font-bold text-xs bg-yellow-500/10 inline-block px-2 py-0.5 rounded-full mt-1 border border-yellow-500/20" id="planDaysDisplay"></div></div><button onclick="logout()" title="Secure Logout" class="bg-red-600/20 border border-red-600/30 text-red-500 px-4 py-2 rounded-lg hover:bg-red-600 hover:text-white transition font-bold"><i class="fa-solid fa-power-off"></i></button></div></div></nav><div id="authView" class="pt-32 pb-12 px-6 flex-grow flex items-center justify-center flex-col"><div class="max-w-4xl mx-auto flex flex-col items-center mb-12 w-full"><div class="fade-in mb-6" style="animation-delay: 0.1s;"><span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-widest shadow-inner"><span class="relative flex h-2 w-2"><span class="relative h-2 w-2 rounded-full bg-blue-500"></span></span>
+ PREMIUM SOURCE CODES HUB
+ </span></div><h1 class="text-5xl md:text-7xl font-extrabold text-center leading-tight mb-4 fade-in drop-shadow-xl" style="animation-delay: 0.2s;"><span class="gradient-text">SOURCE CODE HUB</span></h1><p class="text-gray-400 text-center max-w-xl text-lg fade-in" style="animation-delay: 0.3s;">Your ultimate destination for premium, ready-to-use application source codes crafted for developers.</p></div><div class="max-w-5xl mx-auto flex flex-col md:flex-row gap-8 items-stretch w-full fade-in" style="animation-delay: 0.4s;"><div class="glass-panel p-8 md:p-10 rounded-3xl w-full md:w-1/2 flex flex-col justify-center border-t-4 border-red-500 relative overflow-hidden group"><div class="absolute top-0 right-0 w-32 h-32 bg-red-500/10 rounded-full blur-3xl transition duration-500"></div><h2 class="text-3xl font-extrabold mb-2 text-center text-white"><i class="fa-solid fa-lock text-red-500 mr-2 text-2xl"></i>Secure Login</h2><p class="text-gray-400 text-center mb-8 text-sm">Access your developer account.</p><input type="email" id="loginEmail" class="input-box" placeholder="Email Address"><input type="password" id="loginPass" class="input-box" placeholder="Password"><button id="loginBtn" class="w-full py-3.5 bg-gradient-to-r from-red-600 to-yellow-600 rounded-xl font-bold transition flex justify-center items-center gap-2 shadow-[0_5px_20px_rgba(239,68,68,0.4)] text-lg hover:brightness-110"><span>LOGIN NOW</span><i id="loginSpinner" class="fa-solid fa-circle-notch spinner text-xl"></i></button><button onclick="document.getElementById('pricingSection').scrollIntoView({behavior: 'smooth'})" class="mt-4 w-full text-center text-sm font-bold text-yellow-500 hover:text-yellow-400 transition underline decoration-yellow-500/30 underline-offset-4">
+ Get Account Access
+ </button><p class="text-center text-xs text-gray-500 mt-4 flex items-center justify-center gap-1"><i class="fa-solid fa-shield-halved"></i> One Device restricted Login System</p></div><div id="pricingSection" class="glass-panel p-8 md:p-10 rounded-3xl w-full md:w-1/2 shimmer-card border-t-4 border-yellow-500 relative scroll-mt-24"><div class="flex justify-between items-center mb-6"><h2 class="text-3xl font-extrabold gradient-text">Buy Login Plan</h2><i class="fa-solid fa-crown text-4xl text-yellow-500 drop-shadow-[0_0_10px_rgba(234,179,8,0.8)]"></i></div><ul class="text-gray-300 space-y-3 mb-8 font-medium text-sm md:text-base"><li class="flex items-center"><i class="fa-solid fa-circle-check text-green-500 mr-3 text-lg"></i> Access All Premium Source Codes</li><li class="flex items-center"><i class="fa-solid fa-circle-check text-green-500 mr-3 text-lg"></i> Complete Web App Templates</li><li class="flex items-center"><i class="fa-solid fa-circle-check text-green-500 mr-3 text-lg"></i>Sim Database Code </li><li class="flex items-center"><i class="fa-solid fa-circle-check text-green-500 mr-3 text-lg"></i> TikTok / FB Saver </li><li class="flex items-center"><i class="fa-solid fa-circle-check text-green-500 mr-3 text-lg"></i> Games Source Codes </li><li class="flex items-center"><i class="fa-solid fa-circle-check text-green-500 mr-3 text-lg"></i> Fully Customizable Codes</li><li class="flex items-center"><i class="fa-solid fa-circle-check text-green-500 mr-3 text-lg"></i> No Download Limits</li><li class="flex items-center"><i class="fa-solid fa-circle-check text-green-500 mr-3 text-lg"></i> Weekly New Codes Added</li><li class="flex items-center"><i class="fa-solid fa-circle-check text-green-500 mr-3 text-lg"></i> High Quality Bug-Free Codes</li></ul><div class="text-center mb-8"><span class="text-5xl font-black text-white bg-white/5 px-8 py-3 rounded-2xl border border-white/10 shadow-inner block">Rs: 500<span class="text-lg text-gray-400 font-normal">/mo</span></span></div><a href="https://wa.me/923104882921?text=Hi,%20I%20want%20to%20buy%20SOURAJITVFX%20Source%20Code%20Plan" target="_blank" class="block text-center w-full py-4 bg-white text-black rounded-xl font-extrabold hover:bg-gray-200 transition shadow-[0_0_25px_rgba(255,255,255,0.4)] text-lg">
+ BUY PLAN NOW <i class="fa-brands fa-whatsapp text-green-600 ml-2 text-xl"></i></a></div></div></div><div id="dashboardView" style="display: none;" class="fade-in flex-grow"><section class="pt-32 pb-8 px-6 relative"><div class="max-w-4xl mx-auto text-center"><h1 class="text-5xl md:text-7xl font-extrabold text-center leading-tight mb-4 drop-shadow-lg"><span class="gradient-text">Hello Developer</span></h1><p class="text-gray-400 text-lg md:text-xl">Collection Of <span class="text-white font-bold">Premium Source Codes</span>.</p></div></section><section class="pb-16 px-6"><div id="srcContainer" class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"><div class="skeleton h-56"></div><div class="skeleton h-56"></div><div class="skeleton h-56"></div></div></section><section class="pb-16 px-6 border-t border-gray-800 pt-12 relative overflow-hidden"><div class="absolute inset-0 bg-blue-900/5 z-0"></div><div class="max-w-6xl mx-auto relative z-10"><h3 class="text-2xl font-bold mb-8 text-yellow-500 flex items-center gap-3"><i class="fa-solid fa-graduation-cap bg-yellow-500/20 p-3 rounded-lg"></i> Recommended Learning</h3><div id="adsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"><div class="skeleton h-48"></div><div class="skeleton h-48"></div></div></div></section></div><footer class="bg-gray-900 py-8 border-t border-gray-800 mt-auto relative z-10"><div class="container mx-auto px-4 text-center"><p class="text-gray-400">© 2026 <span class="font-bold text-white"> SOURAJITVFX HACKS</span>. Developed by <span class="text-red-500 font-bold">Faisal Ali</span></p><div class="flex justify-center gap-6 mt-4 text-gray-500 text-2xl"><a href="https://youtube.com/@SOURAJITVFXtech" target="_blank"><i class="fa-brands fa-youtube hover:text-red-600 transition"></i></a><a href="https://whatsapp.com/channel/0029VbAVaylCnA7pF6IP0R46" target="_blank"><i class="fa-brands fa-whatsapp hover:text-green-500 transition"></i></a><a href="https://t.me/SOURAJITVFXHACKS" target="_blank"><i class="fa-brands fa-telegram hover:text-blue-400 transition"></i></a></div></div></footer><script type="module">
+ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+ import { getDatabase, ref, get, update, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
+ const firebaseConfig = { apiKey: "AIzaSyClTPQAlaWGAfjUhgicqgwzkpmeCekz730", authDomain: "api-hub-SOURAJITVFX.firebaseapp.com", databaseURL: "https://api-hub-SOURAJITVFX-default-rtdb.firebaseio.com", projectId: "api-hub-SOURAJITVFX" };
+ const app = initializeApp(firebaseConfig);
+ const db = getDatabase(app);
+ // Visitor Tracking
+ if (!sessionStorage.getItem('visited')) {
+ runTransaction(ref(db, 'stats/visitors'), (curr) => (curr || 0) + 1);
+ sessionStorage.setItem('visited', 'true');
+ }
+ // WhatsApp Floating Icon Delay
+ setTimeout(() => {
+ document.getElementById('wa-float').classList.remove('hidden');
+ setTimeout(() => {
+ let tt = document.getElementById('wa-tooltip');
+ tt.classList.remove('opacity-0');
+ setTimeout(() => tt.classList.add('opacity-0'), 4000);
+ }, 600);
+ }, 10000);
+ // System Popups (Errors/Success)
+ window.showPopup = (title, msg, type="error") => {
+ document.getElementById('popupTitle').innerText = title;
+ document.getElementById('popupMsg').innerText = msg;
+ let icon = document.getElementById('popupIcon');
+ if(type === 'error'){
+ icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>'; icon.className = "text-6xl mb-4 text-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.6)]";
+ } else {
+ icon.innerHTML = '<i class="fa-solid fa-circle-check"></i>'; icon.className = "text-6xl mb-4 text-green-500 drop-shadow-[0_0_15px_rgba(34,197,94,0.6)]";
+ }
+ document.getElementById('popupOverlay').classList.add('active');
+ };
+ window.closePopup = () => { document.getElementById('popupOverlay').classList.remove('active'); };
+ // Admin Notification Popup Controller
+ window.showNotification = (data) => {
+ document.getElementById('notiTitle').innerText = data.title;
+ document.getElementById('notiDesc').innerText = data.desc;
+ const btnContainer = document.getElementById('notiBtnContainer');
+ const btn = document.getElementById('notiBtn');
+ if(data.btnTxt && data.btnUrl) {
+ btn.innerText = data.btnTxt;
+ btn.href = data.btnUrl;
+ btnContainer.classList.remove('hidden');
+ } else {
+ btnContainer.classList.add('hidden');
+ }
+ document.getElementById('notificationOverlay').classList.add('active');
+ };
+ window.closeNotification = () => { document.getElementById('notificationOverlay').classList.remove('active'); };
+ // Global Notification Listener
+ onValue(ref(db, 'globalPopup'), (snap) => {
+ let data = snap.val();
+ if (data && data.active) {
+ let uniqueId = 'noti_' + (data.timestamp || data.title.replace(/\s+/g, ''));
+ if (!sessionStorage.getItem(uniqueId)) {
+ showNotification(data);
+ sessionStorage.setItem(uniqueId, 'true');
+ }
+ }
+ });
+ // Device ID Logic (Strict 1 Device per Account)
+ function getMyDeviceId() {
+ let dId = localStorage.getItem('SOURAJITVFX_secure_device_id');
+ if (!dId) {
+ // Generate secure random string
+ dId = 'DEV_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+ localStorage.setItem('SOURAJITVFX_secure_device_id', dId);
+ }
+ return dId;
+ }
+ const authView = document.getElementById('authView');
+ const dashboardView = document.getElementById('dashboardView');
+ const userProfile = document.getElementById('userProfile');
+ let currentUserKey = localStorage.getItem('SOURAJITVFX_user_key');
+ let currentUserEmail = localStorage.getItem('SOURAJITVFX_user_email');
+ // Login Logic
+ document.getElementById('loginBtn').addEventListener('click', async () => {
+ let email = document.getElementById('loginEmail').value.trim();
+ let pass = document.getElementById('loginPass').value.trim();
+ if(!email || !pass) return showPopup("Required Fields", "Please enter valid email and password.", "error");
+ document.getElementById('loginSpinner').style.display = 'inline-block';
+ let key = email.replace(/\./g, '_');
+ let snap = await get(ref(db, 'users/' + key));
+ if (snap.exists()) {
+ let uData = snap.val();
+ if (uData.password !== pass) {
+ document.getElementById('loginSpinner').style.display = 'none';
+ return showPopup("Authentication Failed", "The password you entered is incorrect.", "error");
+ }
+ if (uData.status === 'blocked') {
+ document.getElementById('loginSpinner').style.display = 'none';
+ return showPopup("Account Suspended", "Your account is blocked. Please contact support.", "error");
+ }
+ let daysPassed = Math.floor((new Date().getTime() - uData.startDate) / (1000 * 3600 * 24));
+ if (daysPassed >= uData.planDays) {
+ await update(ref(db, 'users/' + key), { status: 'expired' });
+ document.getElementById('loginSpinner').style.display = 'none';
+ return showPopup("Plan Expired", "Your subscription has ended! Please renew your plan.", "error");
+ }
+ // Device Security Check
+ let myDeviceId = getMyDeviceId();
+ if (!uData.deviceId) {
+ // First time login, bind device
+ await update(ref(db, 'users/' + key), { deviceId: myDeviceId });
+ } else if (uData.deviceId !== myDeviceId) {
+ // Already bound to another device
+ document.getElementById('loginSpinner').style.display = 'none';
+ return showPopup("Device Restricted", "Security Alert: This account is already registered and locked to another device. You can only login using your original device.", "error");
+ }
+ // Success
+ localStorage.setItem('SOURAJITVFX_user_key', key);
+ localStorage.setItem('SOURAJITVFX_user_email', email);
+ window.location.reload();
+ } else {
+ document.getElementById('loginSpinner').style.display = 'none';
+ showPopup("User Not Found", "No account found with this email. Please buy a plan to get access.", "error");
+ }
+ });
+ window.logout = function() { localStorage.removeItem('SOURAJITVFX_user_key'); localStorage.removeItem('SOURAJITVFX_user_email'); window.location.reload(); }
+ // Dashboard Initialization
+ if (currentUserKey) {
+ authView.style.display = 'none';
+ dashboardView.style.display = 'flex';
+ dashboardView.style.flexDirection = 'column';
+ userProfile.classList.remove('hidden');
+ userProfile.classList.add('flex');
+ document.getElementById('userEmailDisplay').innerText = currentUserEmail;
+ // Live Check Status & Device Lock verification
+ onValue(ref(db, 'users/' + currentUserKey), (snap) => {
+ let uData = snap.val();
+ let myDeviceId = getMyDeviceId();
+ if (!uData || uData.status === 'blocked' || uData.status === 'expired' || (uData.deviceId && uData.deviceId !== myDeviceId)) {
+ showPopup("Session Terminated", "Security lock triggered or account expired. Logging out...", "error");
+ setTimeout(logout, 3000);
+ } else {
+ let daysPassed = Math.floor((new Date().getTime() - uData.startDate) / (1000 * 3600 * 24));
+ let daysLeft = uData.planDays - daysPassed;
+ document.getElementById('planDaysDisplay').innerHTML = `<i class="fa-regular fa-clock"></i> ${daysLeft > 0 ? daysLeft : 0} Days Left`;
+ }
+ });
+ // Fetch Source Codes
+ onValue(ref(db, 'sourceCodes'), (snap) => {
+ let codes = snap.val() || {}; let html = '';
+ for (let key in codes) {
+ let code = codes[key];
+ html += `
+ <div class="glass-panel p-6 rounded-2xl src-card flex flex-col fade-in border-t border-gray-700/50"><div class="flex items-center gap-4 mb-4"><div class="w-14 h-14 bg-gradient-to-br from-gray-800 to-gray-900 text-red-400 rounded-xl flex items-center justify-center text-3xl border border-gray-700 shadow-inner"><i class="${code.icon}"></i></div><h3 class="font-bold text-xl text-white tracking-wide">${code.name}</h3></div><p class="text-gray-400 text-sm mb-6 flex-grow leading-relaxed">${code.desc}</p><div class="mt-auto"><a href="${code.url}" target="_blank" class="flex justify-center items-center gap-2 w-full py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl text-sm font-extrabold transition-all hover:brightness-110"><i class="fa-solid fa-cloud-arrow-down text-lg"></i> DOWNLOAD SOURCE
+ </a></div></div>`;
+ }
+ document.getElementById('srcContainer').innerHTML = html || `
+ <div class="col-span-3 text-center py-12 glass-panel rounded-3xl border border-dashed border-gray-600"><i class="fa-solid fa-folder-open text-6xl text-gray-600 mb-4"></i><p class='text-gray-400 text-lg font-bold'>No Source Codes published yet.</p></div>`;
+ });
+ // Fetch Ads
+ onValue(ref(db, 'ads'), (snap) => {
+ let ads = snap.val() || {}; let html = '';
+ for (let key in ads) {
+ let ad = ads[key];
+ html += `
+ <div class="glass-panel p-3 rounded-2xl text-center fade-in transition duration-300 group"><div class="overflow-hidden rounded-xl mb-4 relative"><img src="${ad.img}" alt="Course" class="w-full h-40 object-cover border border-gray-700 transition duration-500"><div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition duration-300"></div></div><a href="${ad.url}" target="_blank" class="block w-full py-3 bg-yellow-500 hover:bg-yellow-400 text-black font-extrabold rounded-xl transition text-sm">VIEW DETAILS <i class="fa-solid fa-arrow-right ml-1"></i></a></div>`;
+ }
+ document.getElementById('adsContainer').innerHTML = html || "<p class='col-span-4 text-center text-gray-500'>No recommendations available right now.</p>";
+ });
+ }
+ </script><script>document.addEventListener('contextmenu',function(e){e.preventDefault();return false;});</script><script>['copy','cut','selectstart','dragstart'].forEach(function(ev){document.addEventListener(ev,function(e){e.preventDefault();});});</script><style>*{-webkit-user-select:none!important;user-select:none!important;}</style><script>document.addEventListener('keydown',function(e){var b=[123];if(e.ctrlKey&&e.shiftKey)b.push(73,74,67);if(e.ctrlKey)b.push(85,83,65,80,86);if(b.indexOf(e.keyCode)>-1){e.preventDefault();return false;}});</script><script>(function(){
+if(window.self!==window.top)return;
+var _b=false;
+function _chk(){
+  var _dw=window.outerWidth-window.innerWidth;
+  var _dh=window.outerHeight-window.innerHeight;
+  if(_dw>200||_dh>200){
+    if(!_b){_b=true;
+      document.body.style.cssText='margin:0;display:flex;align-items:center;justify-content:center;height:100vh;background:#050A15;';
+      document.body.innerHTML='<div style="text-align:center;color:#FF3B30;font-family:monospace;"><i class="fa-solid fa-ban" style="font-size:64px;margin-bottom:16px;filter:drop-shadow(0 0 15px rgba(255,59,48,0.5));"></i><div style="font-size:22px;letter-spacing:3px;font-weight:bold;">DEVTOOLS BLOCKED</div></div>';
+    }
+  }else{_b=false;}
+}
+setInterval(_chk,1000);
+})();</script><script>(function(){
+if(window.self!==window.top)return;
+var _h=341774408;
+window.addEventListener('load',function(){
+  setTimeout(function(){
+    var _el=document.documentElement;
+    var _stored=_el&&_el.getAttribute('data-uh');
+    if(!_stored||parseInt(_stored,10)!==_h){
+      document.open();document.write('<html><head><meta charset="UTF-8"><style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#050A15;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:monospace;}</style><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></head><body><div style="text-align:center;padding:40px;"><i class="fa-solid fa-triangle-exclamation" style="font-size:72px;color:#FF3B30;margin-bottom:20px;animation:sp 0.5s ease-in-out infinite alternate;filter:drop-shadow(0 0 20px rgba(255,59,48,0.5));"></i><div style="font-size:24px;font-weight:800;letter-spacing:3px;color:#fff;margin-bottom:10px;">TAMPER DETECTED</div><div style="font-size:14px;color:#94A3B8;letter-spacing:2px;">This file has been modified</div></div><style>@keyframes sp{from{transform:scale(1);}to{transform:scale(1.1);}}</style></body></html>');document.close();
+    }
+  },800);
+});
+})();</script></body></html>

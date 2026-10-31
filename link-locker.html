@@ -1,0 +1,387 @@
+<!DOCTYPE html><html lang="en"><head>
+
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="LOCK YOUR URLs securely.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="google-site-verification" content="2SUTqtLYtAtyg4_k6jjkH-RX7tY7rf0SGVNETvitmv4">
+    
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <title>URL LOCKER - SOURAJITVFX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&amp;display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Light Theme Palette */
+            --primary-color: #007bff; /* Professional Blue */
+            --secondary-color: #6c757d;
+            --background-light: #f8f9fa;
+            --card-background: #ffffff;
+            --text-dark: #212529;
+            --border-light: #ced4da;
+            --success-color: #28a745;
+            --gradient-start: #007bff;
+            --gradient-end: #00d2ff;
+        }
+
+        * {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: var(--background-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+        }
+
+        .heading {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 50px;
+            margin-top: 20px;
+            color: var(--primary-color);
+        }
+
+        .heading span {
+            font-size: 1rem;
+            font-weight: 400;
+            display: block;
+            margin-top: 5px;
+            color: var(--secondary-color);
+        }
+
+        .main-div {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            width: 100%;
+            max-width: 550px;
+        }
+
+        .card-container {
+            background-color: var(--card-background);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            width: 100%;
+            border: 1px solid var(--border-light);
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .card-container:hover {
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-container p {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        .card-container input,
+        .card-container textarea {
+            width: 100%;
+            min-height: 48px;
+            border: 1px solid var(--border-light);
+            outline: none;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            background-color: var(--background-light);
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            font-weight: 600;
+            resize: none;
+        }
+
+        .card-container input:focus,
+        .card-container textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+            background-color: #fff;
+        }
+
+        .card-container input::placeholder,
+        .card-container textarea::placeholder {
+            color: var(--secondary-color);
+            font-weight: 400;
+        }
+
+        #lock_btn, #copy_btn, .whatsapp-btn {
+            display: block;
+            margin: 10px auto;
+            height: 45px;
+            width: 100%;
+            max-width: 250px;
+            border-radius: 8px;
+            border: none;
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        #lock_btn, #copy_btn {
+            background-color: var(--primary-color);
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        }
+
+        #lock_btn:hover, #copy_btn:hover {
+            background-color: #0056b3;
+            box-shadow: 0 6px 15px rgba(0, 123, 255, 0.4);
+            transform: translateY(-1px);
+        }
+
+        /* WhatsApp Button Style */
+        .whatsapp-btn {
+            background-color: #25d366; /* WhatsApp Green */
+            max-width: 300px;
+            margin-top: 30px;
+            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.5);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+        }
+        
+        .whatsapp-btn:hover {
+            background-color: #1daa54;
+            box-shadow: 0 6px 15px rgba(37, 211, 102, 0.6);
+            transform: translateY(-1px);
+        }
+        
+        .whatsapp-btn i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+
+        /* --- Locked URL Styles (Premium Look) --- */
+
+        #locked_url {
+            margin-top: 10px;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            padding: 15px;
+            word-wrap: break-word;
+            min-height: 100px;
+            font-weight: 600; /* Made text bold for contrast */
+            /* Gradient Premium Effect */
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end), var(--gradient-start));
+            background-size: 200% 100%;
+            animation: gradient-animation 3s linear infinite;
+            border: 2px solid var(--primary-color);
+            color: #fff; /* White text for contrast on the light gradient */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        @keyframes gradient-animation {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        #lurl_qr {
+            display: block;
+            margin: 25px auto 10px auto;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 5px;
+            height: 120px;
+            width: 120px;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Modern Toast Popup (Copy Message) */
+        .copy-message {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--success-color);
+            color: #fff;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(40, 167, 69, 0.4);
+            z-index: 1000;
+            font-weight: 600;
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Bounce effect */
+        }
+
+        .copy-message.show {
+            transform: translateX(0);
+        }
+
+        /* Footer and Watermark */
+        .footer-content {
+            text-align: center;
+            margin-top: 40px;
+            padding: 10px;
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+            width: 100%;
+        }
+        
+        .watermark {
+            position: fixed;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            color: rgba(0, 0, 0, 0.1);
+            pointer-events: none;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Font Awesome for WhatsApp Icon */
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
+        
+        /* Responsive Design */
+        @media (max-width: 576px) {
+            .heading {
+                font-size: 2rem;
+            }
+            .copy-message {
+                bottom: 10px;
+                right: 10px;
+                padding: 12px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="copy-message" id="copyMessage">URL Copied! ✅</div>
+    
+    <p class="heading">URL LOCKER<br> 
+        <span>SOURAJITVFX URL LOCKER PRO</span>
+    </p>
+    
+    <div class="main-div">
+        <div class="card-container" id="lock_div_id">
+            <p>Enter URL</p>
+            <input type="url" id="url" placeholder="https://your-secure-link.com" required="">
+            <p>Enter Unlock Key</p>
+            <input type="password" id="url_key" placeholder="Enter A Password to unlock" required="">
+            <button id="lock_btn">Lock</button>
+        </div>
+        
+        <div class="card-container" id="url_display_id" style="display: none;">
+            <p>URL LOCKED 🔒 BY SOURAJITVFX</p>
+            <textarea id="locked_url" cols="40" rows="4" readonly="" placeholder="Locked URL will appear here..."></textarea>
+            <button id="copy_btn">Copy URL</button>
+            <img id="lurl_qr" alt="Locked URL QR Code">
+        </div>
+    </div>
+
+    <div class="footer-content">
+        <a href="https://whatsapp.com/channel/0029VbAzazM2kNFp4p1qIZ2P" target="_blank" class="whatsapp-btn">
+            <i class="fab fa-whatsapp"></i> Join WhatsApp Channel
+        </a>
+        <p style="margin-top: 20px;">Rana Faisal Ali | SOURAJITVFX HACKS ©</p>
+    </div>
+    
+    <div class="watermark">SOURAJITVFX LOCKER PRO</div>
+
+    
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+<script>
+        // DOM Elements
+        const urlInput = document.getElementById("url");
+        const urlKeyInput = document.getElementById("url_key");
+        const lockedUrlTextarea = document.getElementById("locked_url");
+        const copyMessage = document.getElementById("copyMessage");
+        const lockDiv = document.getElementById("lock_div_id");
+        const urlDisplayDiv = document.getElementById("url_display_id");
+
+        // Event Listeners
+        document.getElementById("lock_btn").addEventListener("click", encrypt, false);
+        document.getElementById("copy_btn").addEventListener("click", copy, false);
+
+        function encrypt() {
+            if (urlInput.value === '' || urlKeyInput.value === '') {
+                // Use a simple alert for input validation
+                alert('URL or Secret Key cannot be empty!');
+                return;
+            }
+            
+            // Core Encryption Logic
+            const EncryptED = CryptoJS.AES.encrypt(urlInput.value, urlKeyInput.value);
+            const url_hash = EncryptED.toString()
+                                    .replace(/\+/g, 'p1L2u3S')
+                                    .replace(/\//g, 's1L2a3S4h')
+                                    .replace(/=/g, 'e1Q2u3A4l');
+            
+            // NOTE: Replace with your actual hosted URL if different
+            const locked_url = "https://url-locker.vercel.app/?hash=" + url_hash;
+            
+            lockDiv.style.display = "none";
+            urlDisplayDiv.style.display = "block";
+            lockedUrlTextarea.value = locked_url;
+            
+            // QR Code Generation
+            document.getElementById("lurl_qr").src = "https://api.qrserver.com/v1/create-qr-code/?data=" + encodeURIComponent(locked_url) + "&size=120x120&color=212529";
+        }
+
+        // --- Clipboard Copy Function (Fix) ---
+        async function copy() {
+            const textToCopy = lockedUrlTextarea.value;
+            
+            try {
+                // 1. Try modern Clipboard API (requires secure context - HTTPS)
+                await navigator.clipboard.writeText(textToCopy);
+                showToast("URL Copied! ✅");
+            } catch (err) {
+                // 2. Fallback to older document.execCommand('copy')
+                try {
+                    lockedUrlTextarea.select();
+                    lockedUrlTextarea.setSelectionRange(0, 99999);
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        showToast("URL Copied! ✅ (Fallback)");
+                    } else {
+                        throw new Error("Copy command failed.");
+                    }
+                } catch (err) {
+                    // 3. Last resort notification
+                    console.error('Failed to copy text: ', err);
+                    alert("Failed to automatically copy URL. Please copy it manually.");
+                }
+            } finally {
+                // Clear selection after copying for a cleaner look
+                if (window.getSelection) {
+                    window.getSelection().removeAllRanges();
+                }
+            }
+        }
+        
+        // --- Modern Toast Popup Function ---
+        function showToast(message) {
+            copyMessage.textContent = message;
+            copyMessage.classList.add('show');
+            
+            // Hide the toast after 3 seconds
+            setTimeout(function() {
+                copyMessage.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body></html>

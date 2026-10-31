@@ -1,0 +1,420 @@
+<!DOCTYPE html><html lang="en"><head>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOURAJITVFX Post Maker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&amp;display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1b4332; /* Deep Green */
+            --secondary: #2d6a4f; /* Dark Green */
+            --accent: #52b788; /* Forest Green */
+            --light-green: #d8f3dc;
+            --bg-body: #f0fdf4;
+            --surface: #ffffff;
+            --text-main: #081c15;
+            --text-muted: #40916c;
+            --border: #d8f3dc;
+            --shadow: 0 10px 30px -5px rgba(45, 106, 79, 0.15);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: var(--text-main);
+        }
+
+        .main-card {
+            background: var(--surface);
+            width: 100%;
+            max-width: 700px;
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            box-sizing: border-box;
+        }
+
+        /* Shimmer Title Animation */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin: 0 0 30px 0;
+            background: linear-gradient(90deg, #1b4332, #52b788, #1b4332);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            to { background-position: 200% center; }
+        }
+
+        .picker-label {
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin: 20px 0 10px 5px;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .scroll-container {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 10px 5px;
+            white-space: nowrap;
+            scrollbar-width: none;
+        }
+        .scroll-container::-webkit-scrollbar { display: none; }
+
+        .item-tile {
+            flex: 0 0 auto;
+            width: 54px;
+            height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            border: 1px solid var(--border);
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+        }
+
+        .item-tile:nth-child(odd) { border-radius: 18px 6px 18px 6px; }
+        .item-tile:nth-child(even) { border-radius: 6px 18px 6px 18px; }
+
+        .item-tile:hover {
+            transform: translateY(-5px);
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 8px 15px rgba(45, 106, 79, 0.25);
+            border-color: var(--primary);
+        }
+
+        textarea {
+            width: 100%;
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            background: #ffffff;
+            box-sizing: border-box;
+            outline: none;
+            min-height: 140px;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus { border-color: var(--accent); }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        select {
+            padding: 12px 20px;
+            border-radius: 15px;
+            border: 2px solid var(--border);
+            font-weight: 600;
+            font-family: inherit;
+            background: white;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 50%, #52b788 100%);
+            background-size: 200% auto;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0 40px;
+            border-radius: 18px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(27, 67, 50, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 55px;
+            animation: buttonPulse 3s infinite;
+        }
+
+        .btn-generate:hover {
+            background-position: right center;
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 25px rgba(45, 106, 79, 0.4);
+        }
+
+        @keyframes buttonPulse {
+            0% { box-shadow: 0 0 0 0 rgba(82, 183, 136, 0.4); }
+            70% { box-shadow: 0 0 0 12px rgba(82, 183, 136, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(82, 183, 136, 0); }
+        }
+
+        .output-container {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 2px solid var(--border);
+            position: relative;
+        }
+
+        #output {
+            font-size: 1.3rem;
+            min-height: 50px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        .btn-copy {
+            background: var(--text-main);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 15px;
+            font-weight: 700;
+            margin-top: 20px;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-copy:hover { background: #000; transform: translateY(-2px); }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .whatsapp-btn, .more-tools-btn {
+            text-decoration: none;
+            padding: 15px 35px;
+            border-radius: 100px;
+            font-weight: 700;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .whatsapp-btn {
+            background: #25D366;
+            color: white;
+            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.2);
+        }
+
+        .more-tools-btn {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 10px 20px rgba(27, 67, 50, 0.2);
+        }
+
+        .whatsapp-btn:hover, .more-tools-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.15);
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 30px;
+            background: #081c15;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            display: none;
+            z-index: 1000;
+            font-weight: 600;
+        }
+
+        @media (max-width: 600px) {
+            .controls-grid { grid-template-columns: 1fr; }
+            h1 { font-size: 1.8rem; }
+            .main-card { padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-card">
+        <h1>𝗙𝗧𝗚𝗠 𝗣𝗢𝗦𝗧 𝗠𝗔𝗞𝗘𝗥</h1>
+
+        <textarea id="inputText" placeholder="Enter text here... Numbers and letters will be transformed."></textarea>
+
+        <div class="picker-label">Special Characters</div>
+        <div class="scroll-container" id="charPicker"><div class="item-tile">֎</div><div class="item-tile">✯</div><div class="item-tile">➙</div><div class="item-tile">➔</div><div class="item-tile">〄</div><div class="item-tile">♛</div><div class="item-tile">⍟︎</div><div class="item-tile">✇</div><div class="item-tile">✥</div><div class="item-tile">‎ </div><div class="item-tile">𓆩</div><div class="item-tile">𓆪</div><div class="item-tile">𓃮</div><div class="item-tile">⚝</div><div class="item-tile">﷽</div><div class="item-tile">ﷺ</div></div>
+
+        <div class="picker-label">Emoji Selector</div>
+        <div class="scroll-container" id="emojiPicker"><div class="item-tile">🌐</div><div class="item-tile">⚡</div><div class="item-tile">❌</div><div class="item-tile">✅</div><div class="item-tile">🔗</div><div class="item-tile">🥏</div><div class="item-tile">🎉</div><div class="item-tile">📩</div><div class="item-tile">💰</div><div class="item-tile">📁</div><div class="item-tile">📝</div><div class="item-tile">💾</div><div class="item-tile">👇</div><div class="item-tile">☝️</div><div class="item-tile">🚫</div><div class="item-tile">⚠️</div><div class="item-tile">☑️</div><div class="item-tile">💯</div><div class="item-tile">🤖</div><div class="item-tile">😈</div><div class="item-tile">👿</div><div class="item-tile">💀</div><div class="item-tile">👀</div><div class="item-tile">🔥</div><div class="item-tile">🔐</div><div class="item-tile">0️⃣</div><div class="item-tile">1️⃣</div><div class="item-tile">2️⃣</div><div class="item-tile">3️⃣</div><div class="item-tile">4️⃣</div><div class="item-tile">5️⃣</div><div class="item-tile">6️⃣</div><div class="item-tile">7️⃣</div><div class="item-tile">8️⃣</div><div class="item-tile">9️⃣</div><div class="item-tile">🚩</div><div class="item-tile">🇵🇰</div></div>
+
+        <div class="controls-grid">
+            <select id="fontStyleSelector">
+                <option value="stylish">𝐀 Stylish Serif Bold</option>
+                <option value="stylish2">𝑨 Italic Bold Serif</option>
+                <option value="bold">𝗔 Bold Sans-serif</option>
+                <option value="monospace">Ｍｏｎｏ Ｓｐａｃｅ</option>
+                <option value="tiny">ᴛɪɴʏ ғᴏɴᴛ (Sub)</option>
+                <option value="very_small">ᴠᴇʀʏ sᴍᴀʟʟ (Sup)</option>
+                <option value="blocks">🅱🅻🅾🅲🅺🆂</option>
+            </select>
+            <button class="btn-generate" onclick="generateStylishFont()">Transform</button>
+        </div>
+
+        <div class="output-container">
+            <div id="output">Output will appear here...</div>
+        </div>
+        <button class="btn-copy" onclick="copyToClipboard()">Copy to Clipboard</button>
+    </div>
+
+    <div class="footer-links">
+        <a href="https://whatsapp.com/channel/0029VbAVaylCnA7pF6IP0R46 target=" _blank"="" class="whatsapp-btn">Join WhatsApp Channel</a>
+        <a href="https://SOURAJITVFXtools.pages.dev" target="_blank" class="more-tools-btn">Visit More Tools</a>
+    </div>
+
+    <div id="toast"></div>
+
+    
+
+
+<script>
+        const chars = ["֎", "✯", "➙", "➔", "〄", "♛", "⍟︎", "✇", "✥","‎ ","𓆩","𓆪","𓃮","⚝","﷽","ﷺ"];
+        const emojis = ["🌐", "⚡", "❌", "✅", "🔗", "🥏", "🎉", "📩", "💰", "📁", "📝", "💾", "👇", "☝️", "🚫", "⚠️", "☑️", "💯", "🤖", "😈", "👿", "💀", "👀", "🔥","🔐","0️⃣","1️⃣","2️⃣","3️⃣","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣","🚩","🇵🇰"];
+
+        // Your requested font maps including number support
+        const fontMaps = {
+            'stylish': {
+                'A': '𝐀', 'B': '𝐁', 'C': '𝐂', 'D': '𝐃', 'E': '𝐄', 'F': '𝐅', 'G': '𝐆', 'H': '𝐇', 'I': '𝐈', 'J': '𝐉', 'K': '𝐊', 'L': '𝐋', 'M': '𝐌', 'N': '𝐍', 'O': '𝐎', 'P': '𝐏', 'Q': '𝐐', 'R': '𝐑', 'S': '𝐒', 'T': '𝐓', 'U': '𝐔', 'V': '𝐕', 'W': '𝐖', 'X': '𝐗', 'Y': '𝐘', 'Z': '𝐙',
+                'a': '𝐚', 'b': '𝐛', 'c': '𝐜', 'd': '𝐝', 'e': '𝐞', 'f': '𝐟', 'g': '𝐠', 'h': '𝐡', 'i': '𝐢', 'j': '𝐣', 'k': '𝐤', 'l': '𝐥', 'm': '𝐦', 'n': '𝐧', 'o': '𝐨', 'p': '𝐩', 'q': '𝐪', 'r': '𝐫', 's': '𝐬', 't': '𝐭', 'u': '𝐮', 'v': '𝐯', 'w': '𝐰', 'x': '𝐱', 'y': '𝐲', 'z': '𝐳',
+                '0': '𝟎', '1': '𝟏', '2': '𝟐', '3': '𝟑', '4': '𝟒', '5': '𝟓', '6': '𝟔', '7': '𝟕', '8': '𝟖', '9': '𝟗'
+            },
+            'stylish2': {
+                'A': '𝑨', 'B': '𝑩', 'C': '𝑪', 'D': '𝑫', 'E': '𝑬', 'F': '𝑭', 'G': '𝑮', 'H': '𝑯', 'I': '𝑰', 'J': '𝑱', 'K': '𝑲', 'L': '𝑳', 'M': '𝑴', 'N': '𝑵', 'O': '𝑶', 'P': '𝑷', 'Q': '𝑸', 'R': '𝑹', 'S': '𝑺', 'T': '𝑻', 'U': '𝑼', 'V': '𝑽', 'W': '𝑾', 'X': '𝑿', 'Y': '𝒀', 'Z': '𝒁',
+                'a': '𝒂', 'b': '𝒃', 'c': '𝒄', 'd': '𝒅', 'e': '𝒆', 'f': '𝒇', 'g': '𝒈', 'h': '𝒉', 'i': '𝒊', 'j': '𝒋', 'k': '𝒌', 'l': '𝒍', 'm': '𝒎', 'n': '𝒏', 'o': '𝒐', 'p': '𝒑', 'q': '𝒒', 'r': '𝒓', 's': '𝒔', 't': '𝒕', 'u': '𝒖', 'v': '𝒗', 'w': '𝒘', 'x': '𝒙', 'y': '𝒚', 'z': '𝒛',
+                '0': '𝟎', '1': '𝟏', '2': '𝟐', '3': '𝟑', '4': '𝟒', '5': '𝟓', '6': '𝟔', '7': '𝟕', '8': '𝟖', '9': '𝟗'
+            },
+            'bold': {
+                'A': '𝗔', 'B': '𝗕', 'C': '𝗖', 'D': '𝗗', 'E': '𝗘', 'F': '𝗙', 'G': '𝗚', 'H': '𝗛', 'I': '𝗜', 'J': '𝗝', 'K': '𝗞', 'L': '𝗟', 'M': '𝗠', 'N': '𝗡', 'O': '𝗢', 'P': '𝗣', 'Q': '𝗤', 'R': '𝗥', 'S': '𝗦', 'T': '𝗧', 'U': '𝗨', 'V': '𝗩', 'W': '𝗪', 'X': '𝗫', 'Y': '𝗬', 'Z': '𝗭',
+                'a': '𝗮', 'b': '𝗯', 'c': '𝗰', 'd': '𝗱', 'e': '𝗲', 'f': '𝗳', 'g': '𝗴', 'h': '𝗵', 'i': '𝗶', 'j': '𝗷', 'k': '𝗸', 'l': '𝗹', 'm': '𝗺', 'n': '𝗻', 'o': '𝗼', 'p': '𝗽', 'q': '𝗾', 'r': '𝗿', 's': '𝘀', 't': '𝘁', 'u': '𝘂', 'v': '𝘃', 'w': '𝘄', 'x': '𝘅', 'y': '𝘆', 'z': '𝘇',
+                '0': '𝟬', '1': '𝟭', '2': '𝟮', '3': '𝟯', '4': '𝟰', '5': '𝟱', '6': '𝟲', '7': '𝟳', '8': '𝟴', '9': '𝟵'
+            },
+            'monospace': {
+                'A': 'Ａ', 'B': 'Ｂ', 'C': 'Ｃ', 'D': 'Ｄ', 'E': 'Ｅ', 'F': 'Ｆ', 'G': 'Ｇ', 'H': 'Ｈ', 'I': 'Ｉ', 'J': 'Ｊ', 'K': 'Ｋ', 'L': 'Ｌ', 'M': 'Ｍ', 'N': 'Ｎ', 'O': 'Ｏ', 'P': 'Ｐ', 'Q': 'Ｑ', 'R': 'Ｒ', 'S': 'Ｓ', 'T': 'Ｔ', 'U': 'Ｕ', 'V': 'Ｖ', 'W': 'Ｗ', 'X': 'Ｘ', 'Y': 'Ｙ', 'Z': 'Ｚ',
+                'a': 'ａ', 'b': 'ｂ', 'c': 'ｃ', 'd': 'ｄ', 'e': 'ｅ', 'f': 'ｆ', 'g': 'ｇ', 'h': 'ｈ', 'i': 'ｉ', 'j': 'ｊ', 'k': 'ｋ', 'l': 'ｌ', 'm': 'ｍ', 'n': 'ｎ', 'o': 'ｏ', 'p': 'ｐ', 'q': 'ｑ', 'r': 'ｒ', 's': 'ｓ', 't': 'ｔ', 'u': 'ｕ', 'v': 'ｖ', 'w': 'ｗ', 'x': 'ｘ', 'y': 'ｙ', 'z': 'ｚ',
+                '0': '０', '1': '１', '2': '２', '3': '３', '4': '４', '5': '５', '6': '６', '7': '７', '8': '８', '9': '９'
+            },
+            'tiny': {
+                'A': 'ᴀ', 'B': 'ʙ', 'C': 'ᴄ', 'D': 'ᴅ', 'E': 'ᴇ', 'F': 'ꜰ', 'G': 'ɢ', 'H': 'ʜ', 'I': 'ɪ', 'J': 'ᴊ', 'K': 'ᴋ', 'L': 'ʟ', 'M': 'ᴍ', 'N': 'ɴ', 'O': 'ᴏ', 'P': 'ᴘ', 'Q': 'Q', 'R': 'ʀ', 'S': 'ꜱ', 'T': 'ᴛ', 'U': 'ᴜ', 'V': 'ᴠ', 'W': 'ᴡ', 'X': 'x', 'Y': 'ʏ', 'Z': 'ᴢ',
+                'a': 'ᴀ', 'b': 'ʙ', 'c': 'ᴄ', 'd': 'ᴅ', 'e': 'ᴇ', 'f': 'ꜰ', 'g': 'ɢ', 'h': 'ʜ', 'i': 'ɪ', 'j': 'ᴊ', 'k': 'ᴋ', 'l': 'ʟ', 'm': 'ᴍ', 'n': 'ɴ', 'o': 'ᴏ', 'p': 'ᴘ', 'q': 'Q', 'r': 'ʀ', 's': 'ꜱ', 't': 'ᴛ', 'u': 'ᴜ', 'v': 'ᴠ', 'w': 'ᴡ', 'x': 'x', 'y': 'ʏ', 'z': 'ᴢ',
+                '0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄', '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉'
+            },
+            'very_small': {
+                'A': 'ᴬ', 'B': 'ᴮ', 'C': 'ᶜ', 'D': 'ᴰ', 'E': 'ᴱ', 'F': 'ᶠ', 'G': 'ᴳ', 'H': 'ᴴ', 'I': 'ᴵ', 'J': 'ᴶ', 'K': 'ᴷ', 'L': 'ᴸ', 'M': 'ᴹ', 'N': 'ᴺ', 'O': 'ᴼ', 'P': 'ᴾ', 'Q': 'Q', 'R': 'ᴿ', 'S': 'ˢ', 'T': 'ᵀ', 'U': 'ᵁ', 'V': 'ⱽ', 'W': 'ᵂ', 'X': 'ˣ', 'Y': 'ʸ', 'Z': 'ᶻ',
+                'a': 'ᵃ', 'b': 'ᵇ', 'c': 'ᶜ', 'd': 'ᵈ', 'e': 'ᵉ', 'f': 'ᶠ', 'g': 'ᵍ', 'h': 'ʰ', 'i': 'ⁱ', 'j': 'ʲ', 'k': 'ᵏ', 'l': 'ˡ', 'm': 'ᵐ', 'n': 'ⁿ', 'o': 'ᵒ', 'p': 'ᵖ', 'q': 'q', 'r': 'ʳ', 's': 'ˢ', 't': 'ᵗ', 'u': 'ᵘ', 'v': 'ᵛ', 'w': 'ʷ', 'x': 'ˣ', 'y': 'ʸ', 'z': 'ᶻ',
+                '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹'
+            },
+            'blocks': {
+                'A': '🅰', 'B': '🅱', 'C': '🅲', 'D': '🅳', 'E': '🅴', 'F': '🅵', 'G': '🅶', 'H': '🅷', 'I': '🅸', 'J': '🅹', 'K': '🅺', 'L': '🅻', 'M': 'Ⓜ', 'N': '🅽', 'O': '🅾', 'P': '🅿', 'Q': '🆀', 'R': '🆁', 'S': '🆂', 'T': '🆃', 'U': '🆄', 'V': '🆅', 'W': '🆆', 'X': '🆇', 'Y': '🆈', 'Z': '🆉',
+                'a': '🅰', 'b': '🅱', 'c': '🅲', 'd': '🅳', 'e': '🅴', 'f': '🅵', 'g': '🅶', 'h': '🅷', 'i': '🅸', 'j': '🅹', 'k': '🅺', 'l': '🅻', 'm': 'Ⓜ', 'n': '🅽', 'o': '🅾', 'p': '🅿', 'q': '🆀', 'r': '🆁', 's': '🆂', 't': '🆃', 'u': '🆄', 'v': '🆅', 'w': '🆆', 'x': '🆇', 'y': '🆈', 'z': '🆉',
+                '0': '0', '1': '1', '2': '2', '3': '3', '4': '4', '5': '5', '6': '6', '7': '7', '8': '8', '9': '9'
+            }
+        };
+
+        function initPickers() {
+            const charContainer = document.getElementById('charPicker');
+            const emojiContainer = document.getElementById('emojiPicker');
+            chars.forEach(c => createTile(c, charContainer));
+            emojis.forEach(e => createTile(e, emojiContainer));
+        }
+
+        function createTile(val, container) {
+            const div = document.createElement('div');
+            div.className = 'item-tile';
+            div.textContent = val;
+            div.onclick = () => {
+                const area = document.getElementById('inputText');
+                const start = area.selectionStart;
+                area.value = area.value.substring(0, start) + val + area.value.substring(area.selectionEnd);
+                area.focus();
+                area.selectionStart = area.selectionEnd = start + val.length;
+                generateStylishFont();
+            };
+            container.appendChild(div);
+        }
+
+        function generateStylishFont() {
+            const text = document.getElementById('inputText').value;
+            const style = document.getElementById('fontStyleSelector').value;
+            const map = fontMaps[style];
+            let result = "";
+
+            for (let char of text) {
+                if (char === '\n' || char === ' ') {
+                    result += char;
+                } else if (map[char]) {
+                    result += map[char];
+                } else {
+                    result += char;
+                }
+            }
+            document.getElementById('output').innerText = result || "Output will appear here...";
+        }
+
+        function copyToClipboard() {
+            const text = document.getElementById('output').innerText;
+            if (!text || text === "Output will appear here...") return;
+
+            navigator.clipboard.writeText(text).then(() => {
+                showToast("Copied Successfully! ✅");
+            }).catch(() => {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showToast("Copied Successfully! ✅");
+            });
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2000);
+        }
+
+        document.getElementById('inputText').addEventListener('input', generateStylishFont);
+        window.onload = initPickers;
+    </script>
+</body></html>

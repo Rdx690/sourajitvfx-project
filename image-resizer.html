@@ -1,0 +1,318 @@
+<!DOCTYPE html><html lang="en" data-uh="-1220320113"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>IMG Compressor | SOURAJITVFX</title><link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;500;700&display=swap" rel="stylesheet"><style>
+ :root {
+ --primary-cyan: #00f2fe;
+ --primary-blue: #4facfe;
+ --deep-slate: #0f172a;
+ --glass-bg: rgba(255, 255, 255, 0.05);
+ --glass-border: rgba(0, 242, 254, 0.2);
+ --bg-dark: #0f172a;
+ }
+ body {
+ font-family: 'Inter', sans-serif;
+ background-color: var(--bg-dark);
+ background-image: radial-gradient(circle at top right, #1e293b, #0f172a);
+ color: #f1f5f9;
+ min-height: 100vh;
+ margin: 0;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ padding: 20px;
+ }
+ .glass-panel {
+ background: var(--glass-bg);
+ backdrop-filter: blur(20px);
+ -webkit-backdrop-filter: blur(20px);
+ border: 1px solid var(--glass-border);
+ border-radius: 30px;
+ padding: 40px;
+ width: 100%;
+ max-width: 950px;
+ box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+ margin-bottom: 20px;
+ }
+ h1 {
+ font-family: 'Archivo Black', sans-serif;
+ text-transform: uppercase;
+ font-size: 2.8rem;
+ margin: 0;
+ background: linear-gradient(to right, var(--primary-cyan), var(--primary-blue));
+ -webkit-background-clip: text;
+ -webkit-text-fill-color: transparent;
+ text-align: center;
+ letter-spacing: -1px;
+ }
+ .subtitle {
+ text-align: center;
+ color: #94a3b8;
+ font-size: 1rem;
+ margin-bottom: 30px;
+ font-weight: 300;
+ letter-spacing: 1px;
+ }
+ .upload-section {
+ position: relative;
+ background: rgba(0, 242, 254, 0.03);
+ border: 2px dashed var(--primary-cyan);
+ border-radius: 20px;
+ padding: 30px;
+ text-align: center;
+ margin-bottom: 30px;
+ transition: 0.3s ease;
+ }
+ .upload-section:hover {
+ border-color: #fff;
+ background: rgba(0, 242, 254, 0.08);
+ }
+ input[type="file"] {
+ position: absolute;
+ width: 100%;
+ height: 100%;
+ top: 0; left: 0;
+ opacity: 0;
+ cursor: pointer;
+ }
+ .controls {
+ display: flex;
+ flex-direction: column;
+ gap: 20px;
+ margin-bottom: 35px;
+ }
+ input[type="range"] {
+ width: 100%;
+ accent-color: var(--primary-cyan);
+ cursor: pointer;
+ }
+ .main-btn {
+ background: linear-gradient(90deg, var(--primary-blue), var(--primary-cyan));
+ color: #0f172a;
+ border: none;
+ padding: 16px;
+ border-radius: 14px;
+ font-weight: 800;
+ font-size: 1rem;
+ text-transform: uppercase;
+ cursor: pointer;
+ transition: all 0.3s ease;
+ }
+ .main-btn:hover {
+ box-shadow: 0 0 25px rgba(0, 242, 254, 0.4);
+ transform: scale(1.02);
+ }
+ .preview-grid {
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ gap: 25px;
+ }
+ .preview-card {
+ background: rgba(0, 0, 0, 0.3);
+ border-radius: 20px;
+ padding: 20px;
+ text-align: center;
+ min-height: 250px;
+ position: relative;
+ border: 1px solid rgba(255,255,255,0.05);
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ }
+ .card-label {
+ font-weight: 700;
+ color: var(--primary-cyan);
+ margin-bottom: 10px;
+ display: block;
+ font-size: 0.8rem;
+ text-transform: uppercase;
+ }
+ img {
+ max-width: 100%;
+ max-height: 300px;
+ border-radius: 12px;
+ display: none;
+ box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+ }
+ .laser {
+ display: none;
+ position: absolute;
+ top: 0; left: 0;
+ width: 100%;
+ height: 3px;
+ background: var(--primary-cyan);
+ box-shadow: 0 0 15px var(--primary-cyan), 0 0 30px var(--primary-cyan);
+ z-index: 100;
+ animation: scanMove 1.5s ease-in-out infinite;
+ }
+ @keyframes scanMove {
+ 0% { top: 10%; opacity: 0; }
+ 50% { opacity: 1; }
+ 100% { top: 90%; opacity: 0; }
+ }
+ .stats-badge {
+ background: var(--primary-cyan);
+ color: #0f172a;
+ padding: 4px 12px;
+ border-radius: 20px;
+ font-size: 0.75rem;
+ font-weight: 800;
+ margin-top: 15px;
+ display: inline-block;
+ }
+ .download-btn {
+ display: none;
+ margin-top: 20px;
+ color: var(--primary-cyan);
+ text-decoration: none;
+ border: 2px solid var(--primary-cyan);
+ padding: 10px 20px;
+ border-radius: 12px;
+ font-weight: 700;
+ transition: 0.3s;
+ }
+ .download-btn:hover {
+ background: var(--primary-cyan);
+ color: #0f172a;
+ }
+ .footer-tools {
+ text-decoration: none;
+ background: rgba(255, 255, 255, 0.03);
+ border: 1px solid rgba(255, 255, 255, 0.1);
+ color: #94a3b8;
+ padding: 8px 18px;
+ border-radius: 50px;
+ font-size: 0.85rem;
+ transition: 0.3s;
+ display: flex;
+ align-items: center;
+ gap: 8px;
+ }
+ .footer-tools:hover {
+ background: rgba(0, 242, 254, 0.1);
+ color: var(--primary-cyan);
+ border-color: var(--primary-cyan);
+ }
+ #toast {
+ position: fixed;
+ bottom: 30px;
+ left: 50%;
+ transform: translateX(-50%) translateY(100px);
+ background: var(--primary-cyan);
+ color: #0f172a;
+ padding: 12px 25px;
+ border-radius: 50px;
+ font-weight: 700;
+ box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+ transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+ z-index: 1000;
+ }
+ #toast.show { transform: translateX(-50%) translateY(0); }
+ #toast.error { background: #ff4757; color: white; }
+ @media (max-width: 650px) { .preview-grid { grid-template-columns: 1fr; } }
+ </style><script>(function(){var n=function(){};['log','warn','error','info','debug','dir','trace','table','group','groupEnd','time','timeEnd','assert','count','clear'].forEach(function(k){try{window.console[k]=n;}catch(e){}});})();</script><script>if(window.top!==window.self){window.top.location.replace(location.href);}</script><script>(function(){
+try{Object.defineProperty(document.documentElement,'outerHTML',{get:function(){return '<!-- PROTECTED BY SOURAJITVFX BOSS -->';}});}catch(e){}
+try{Object.defineProperty(document.documentElement,'innerHTML',{get:function(){return '';}});}catch(e){}
+try{
+  var _oc=console.log.bind(console);
+  Object.defineProperty(document,'documentElement',{get:function(){
+    var _el=document.querySelector('html');
+    return new Proxy(_el,{get:function(t,p){
+      if(p==='outerHTML'||p==='innerHTML')return '<!-- SOURCE PROTECTED -->';
+      var v=t[p];return typeof v==='function'?v.bind(t):v;
+    }});
+  }});
+}catch(e){}
+})();</script></head><body><div id="toast">Message here</div><div class="glass-panel"><h1>SOURAJITVFX RESIZER</h1><div class="subtitle">Compress Images Without Losing Quality</div><div class="upload-section"><span id="uploadText">Click or Drag Image Here</span><input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(this)"></div><div class="controls"><div style="display:flex; justify-content: space-between;"><label>Ai Compressor Strength</label><span id="qValue" style="color:var(--primary-cyan); font-weight:bold;">75%</span></div><input type="range" id="qualityRange" min="1" max="100" value="75" oninput="document.getElementById('qValue').innerText=this.value+'%'"><button class="main-btn" onclick="processCompression()">Start Compressing</button></div><div class="preview-grid"><div class="preview-card" id="origCard"><span class="card-label">Original Image</span><div class="laser" id="laser"></div><img id="origImg"><div id="origSize" class="stats-badge" style="display:none;"></div></div><div class="preview-card"><span class="card-label">Compressed Image</span><img id="compImg"><div id="compSize" class="stats-badge" style="display:none;"></div><br><a id="downBtn" class="download-btn" download="optimized_asset.jpg">Download</a></div></div></div><a href="https://SOURAJITVFXtools.pages.dev" class="footer-tools" target="_blank">
+ Visit More Tools <span>→</span></a><script>
+ const toast = document.getElementById('toast');
+ function showToast(msg, isError = false) {
+ toast.innerText = msg;
+ toast.className = isError ? 'show error' : 'show';
+ setTimeout(() => toast.className = '', 3000);
+ }
+ function formatSize(bytes) {
+ if (bytes === 0) return '0 Bytes';
+ const k = 1024, sizes = ['Bytes', 'KB', 'MB'], i = Math.floor(Math.log(bytes) / Math.log(k));
+ return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+ }
+ function handleFileSelect(input) {
+ const file = input.files[0];
+ if (!file) return;
+ if (!file.type.startsWith('image/')) {
+ showToast("Invalid file type.", true);
+ return;
+ }
+ const reader = new FileReader();
+ reader.onload = (e) => {
+ const img = document.getElementById('origImg');
+ img.src = e.target.result;
+ img.style.display = "block";
+ const stats = document.getElementById('origSize');
+ stats.innerText = formatSize(file.size);
+ stats.style.display = "inline-block";
+ document.getElementById('uploadText').innerText = file.name;
+ showToast("Asset Loaded");
+ };
+ reader.readAsDataURL(file);
+ }
+ function processCompression() {
+ const origImg = document.getElementById('origImg');
+ if (!origImg.src) {
+ showToast("Select an image first!", true);
+ return;
+ }
+ const laser = document.getElementById('laser');
+ const compImg = document.getElementById('compImg');
+ const downBtn = document.getElementById('downBtn');
+ compImg.style.display = "none";
+ downBtn.style.display = "none";
+ document.getElementById('compSize').style.display = "none";
+ laser.style.display = "block";
+ setTimeout(() => {
+ laser.style.display = "none";
+ const canvas = document.createElement('canvas');
+ const ctx = canvas.getContext('2d');
+ const quality = document.getElementById('qualityRange').value / 100;
+ canvas.width = origImg.naturalWidth;
+ canvas.height = origImg.naturalHeight;
+ ctx.drawImage(origImg, 0, 0);
+ const dataUrl = canvas.toDataURL('image/jpeg', quality);
+ compImg.src = dataUrl;
+ compImg.style.display = "block";
+ const stringLength = dataUrl.length - 'data:image/jpeg;base64,'.length;
+ const sizeInBytes = Math.round(stringLength * 0.75);
+ const compStats = document.getElementById('compSize');
+ compStats.innerText = formatSize(sizeInBytes);
+ compStats.style.display = "inline-block";
+ downBtn.href = dataUrl;
+ downBtn.style.display = "inline-block";
+ showToast("Successfully Compressed");
+ }, 1500);
+ }
+</script><script>document.addEventListener('contextmenu',function(e){e.preventDefault();return false;});</script><script>['copy','cut','selectstart','dragstart'].forEach(function(ev){document.addEventListener(ev,function(e){e.preventDefault();});});</script><style>*{-webkit-user-select:none!important;user-select:none!important;}</style><script>document.addEventListener('keydown',function(e){var b=[123];if(e.ctrlKey&&e.shiftKey)b.push(73,74,67);if(e.ctrlKey)b.push(85,83,65,80,86);if(b.indexOf(e.keyCode)>-1){e.preventDefault();return false;}});</script><script>(function(){
+if(window.self!==window.top)return;
+var _b=false;
+function _chk(){
+  var _dw=window.outerWidth-window.innerWidth;
+  var _dh=window.outerHeight-window.innerHeight;
+  if(_dw>200||_dh>200){
+    if(!_b){_b=true;
+      document.body.style.cssText='margin:0;display:flex;align-items:center;justify-content:center;height:100vh;background:#050A15;';
+      document.body.innerHTML='<div style="text-align:center;color:#FF3B30;font-family:monospace;"><i class="fa-solid fa-ban" style="font-size:64px;margin-bottom:16px;filter:drop-shadow(0 0 15px rgba(255,59,48,0.5));"></i><div style="font-size:22px;letter-spacing:3px;font-weight:bold;">DEVTOOLS BLOCKED</div></div>';
+    }
+  }else{_b=false;}
+}
+setInterval(_chk,1000);
+})();</script><script>(function(){
+if(window.self!==window.top)return;
+var _h=-1220320113;
+window.addEventListener('load',function(){
+  setTimeout(function(){
+    var _el=document.documentElement;
+    var _stored=_el&&_el.getAttribute('data-uh');
+    if(!_stored||parseInt(_stored,10)!==_h){
+      document.open();document.write('<html><head><meta charset="UTF-8"><style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#050A15;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:monospace;}</style><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></head><body><div style="text-align:center;padding:40px;"><i class="fa-solid fa-triangle-exclamation" style="font-size:72px;color:#FF3B30;margin-bottom:20px;animation:sp 0.5s ease-in-out infinite alternate;filter:drop-shadow(0 0 20px rgba(255,59,48,0.5));"></i><div style="font-size:24px;font-weight:800;letter-spacing:3px;color:#fff;margin-bottom:10px;">TAMPER DETECTED</div><div style="font-size:14px;color:#94A3B8;letter-spacing:2px;">This file has been modified</div></div><style>@keyframes sp{from{transform:scale(1);}to{transform:scale(1.1);}}</style></body></html>');document.close();
+    }
+  },800);
+});
+})();</script></body></html>
